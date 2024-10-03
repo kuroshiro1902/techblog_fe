@@ -1,17 +1,17 @@
-import { User } from '@prisma/client';
+import { IUser } from '@/models/user.model';
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 
 export interface IAuthData {
-  user: User | undefined;
-  setUser: (user: User | undefined) => void;
+  user: IUser | undefined;
+  setUser: (user: IUser | undefined) => void;
 }
 
 const useAuthStore = create(
   persist<IAuthData>(
     (set) => ({
       user: undefined,
-      setUser: (user: User | undefined) => {
+      setUser: (user: IUser | undefined) => {
         set({ user: user });
       },
     }),

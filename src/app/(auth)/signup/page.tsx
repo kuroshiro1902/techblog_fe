@@ -13,38 +13,47 @@ import { AuthService } from '@/services/auth/auth.service';
 import { getApiErrorMessage } from '@/utils/getApiErrorMessage.util';
 import { userSchema } from '@/models/user.model';
 import FormInput from '@/components/form/formInput';
+import dayjs from 'dayjs';
 
-const loginFormSchema = z.object({
-  username: userSchema.shape.username,
-  password: userSchema.shape.password,
+const { name, email, password, username } = userSchema.shape;
+const signupFormSchema = z.object({
+  name,
+  username,
+  password,
+  dob: z.string().optional(),
+  email,
 });
 
-function LoginPage() {
+function SignupPage() {
   const { toast } = useToast();
   const [submitMessage, setSubmitMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
-  const form = useForm<z.infer<typeof loginFormSchema>>({
-    resolver: zodResolver(loginFormSchema),
+  const form = useForm<z.infer<typeof signupFormSchema>>({
+    resolver: zodResolver(signupFormSchema),
     defaultValues: {
+      name: '',
       username: '',
       password: '',
+      dob: '',
+      email: '',
     },
     disabled: isSubmitting,
   });
 
-  const onSubmit = async (values: z.infer<typeof loginFormSchema>) => {
-    setSubmitMessage('');
+  const onSubmit = async (values: z.infer<typeof signupFormSchema>) => {
     setIsSubmitting(true);
+    setSubmitMessage('');
     try {
-      const data = await AuthService.login(values);
-      console.log({ data });
-
+      const data = await AuthService.signup({
+        ...values,
+        dob: !!values.dob ? dayjs(values.dob).unix() : undefined,
+      });
       toast({
-        title: 'Đăng nhập thành công!',
+        title: 'Đăng ký thành công!',
       });
       setTimeout(() => {
-        router.push(ROUTE.HOME);
+        router.push(ROUTE.LOGIN);
       }, 100);
     } catch (error: any) {
       setSubmitMessage(getApiErrorMessage(error));
@@ -59,20 +68,40 @@ function LoginPage() {
         <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
           <FormInput
             control={form.control}
-            label='Tên đăng nhập'
-            name='username'
-            placeholder='Tên đăng nhập ít nhất 6 ký tự.'
+            name='name'
+            label='Họ tên'
+            placeholder='Họ tên'
           />
           <FormInput
             control={form.control}
-            label='Mật khẩu'
+            name='username'
+            label='Tên đăng nhập'
+            placeholder='Tên đăng nhập'
+          />
+          <FormInput
+            control={form.control}
             name='password'
-            placeholder='Mật khẩu ít nhất 6 ký tự.'
+            label='Mật khẩu'
+            placeholder='Mật khẩu'
             type='password'
+          />
+          <FormInput
+            control={form.control}
+            name='email'
+            label='Email'
+            placeholder='Email'
+            type='email'
+          />
+          <FormInput
+            control={form.control}
+            name='dob'
+            label='Ngày sinh (tháng/ngày/năm)'
+            placeholder='Ngày sinh (tháng/ngày/năm)'
+            type='date'
           />
           <FormMessage>{submitMessage}</FormMessage>
           <Button disabled={isSubmitting} type='submit'>
-            Đăng Nhập
+            Đăng Ký
           </Button>
         </form>
       </Form>
@@ -80,4 +109,4 @@ function LoginPage() {
   );
 }
 
-export default LoginPage;
+export default SignupPage;
