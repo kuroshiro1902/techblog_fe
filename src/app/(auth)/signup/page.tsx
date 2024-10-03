@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { Form, FormMessage } from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ROUTE } from '@/routes/routes';
 import { useToast } from '@/components/hooks/use-toast';
@@ -41,28 +41,32 @@ function SignupPage() {
     disabled: isSubmitting,
   });
 
-  const onSubmit = async (values: z.infer<typeof signupFormSchema>) => {
+  const onSubmit = (values: z.infer<typeof signupFormSchema>) => {
     setIsSubmitting(true);
     setSubmitMessage('');
-    try {
-      const data = await AuthService.signup({
-        ...values,
-        dob: !!values.dob ? dayjs(values.dob).unix() : undefined,
+
+    AuthService.signup({
+      ...values,
+      dob: !!values.dob ? dayjs(values.dob).unix() : undefined,
+    })
+      .then(({ isSuccess, data }) => {
+        if (isSuccess) {
+          toast({
+            title: 'Đăng ký thành công!',
+          });
+          setTimeout(() => {
+            router.replace(ROUTE.LOGIN);
+          }, 100);
+        }
+      })
+      .catch((error) => {
+        setSubmitMessage(getApiErrorMessage(error));
+        setIsSubmitting(false);
       });
-      toast({
-        title: 'Đăng ký thành công!',
-      });
-      setTimeout(() => {
-        router.push(ROUTE.LOGIN);
-      }, 100);
-    } catch (error: any) {
-      setSubmitMessage(getApiErrorMessage(error));
-      setIsSubmitting(false);
-    }
   };
 
   return (
-    <div className='max-w-md mx-auto p-4'>
+    <div className='max-w-md mx-auto p-4' key={'' + Math.random()}>
       <h2 className='text-2xl font-bold mb-6'>Đăng Nhập</h2>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>

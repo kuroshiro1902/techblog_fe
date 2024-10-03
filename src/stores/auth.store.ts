@@ -1,4 +1,5 @@
 import { IUser } from '@/models/user.model';
+import { tokenKey } from '@/services/api';
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 
@@ -16,7 +17,7 @@ const useAuthStore = create(
       },
     }),
     {
-      name: 'auth-storage',
+      name: tokenKey,
       storage: createJSONStorage(() => sessionStorage),
     }
   )

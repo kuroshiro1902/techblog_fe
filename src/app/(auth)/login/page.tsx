@@ -5,8 +5,8 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { Form, FormMessage } from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
-import { useRef, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { ROUTE } from '@/routes/routes';
 import { useToast } from '@/components/hooks/use-toast';
 import { AuthService } from '@/services/auth/auth.service';
@@ -21,6 +21,7 @@ const loginFormSchema = z.object({
 
 function LoginPage() {
   const { toast } = useToast();
+  const searchParams = useSearchParams();
   const [submitMessage, setSubmitMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
@@ -37,15 +38,17 @@ function LoginPage() {
     setSubmitMessage('');
     setIsSubmitting(true);
     try {
-      const data = await AuthService.login(values);
-      console.log({ data });
-
-      toast({
-        title: 'Đăng nhập thành công!',
-      });
-      setTimeout(() => {
-        router.push(ROUTE.HOME);
-      }, 100);
+      const { data, isSuccess } = await AuthService.login(values);
+      if (isSuccess && data) {
+        AuthService.setToken(data.token);
+        toast({
+          title: 'Đăng nhập thành công!',
+        });
+        setTimeout(() => {
+          const redirectUrl = searchParams.get('redirect') || ROUTE.HOME;
+          router.replace(redirectUrl);
+        }, 100);
+      }
     } catch (error: any) {
       setSubmitMessage(getApiErrorMessage(error));
       setIsSubmitting(false);
@@ -53,7 +56,7 @@ function LoginPage() {
   };
 
   return (
-    <div className='max-w-md mx-auto p-4'>
+    <div className='max-w-md mx-auto p-4' key={'' + Math.random()}>
       <h2 className='text-2xl font-bold mb-6'>Đăng Nhập</h2>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>

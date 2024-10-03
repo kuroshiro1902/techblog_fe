@@ -1,6 +1,8 @@
 import { ENV } from '@/environments/env';
 import axios from 'axios';
 
+export const tokenKey = 'techblog-access-token';
+
 export interface IApiResponse<T> {
   isSuccess: boolean;
   message?: string;
@@ -39,29 +41,43 @@ export function parseApiURL(path: string, searchParams?: any) {
 }
 
 class ApiService {
+  getToken() {
+    return localStorage.getItem(tokenKey);
+  }
+
   async get<T>(path: string, searchParams?: { [key: string]: any }) {
     const url = parseApiURL(path, searchParams);
-    return axios.get<IApiResponse<T>>(url);
+    return axios.get<IApiResponse<T>>(url, {
+      headers: { Authorization: this.getToken() },
+    });
   }
 
   async post<T>(path: string, payload?: { [key: string]: any }) {
     const url = parseApiURL(path);
-    return axios.post<IApiResponse<T>>(url, payload);
+    return axios.post<IApiResponse<T>>(url, payload, {
+      headers: { Authorization: this.getToken() },
+    });
   }
 
   async put<T>(path: string, payload?: { [key: string]: any }) {
     const url = parseApiURL(path);
-    return axios.put<IApiResponse<T>>(url, payload);
+    return axios.put<IApiResponse<T>>(url, payload, {
+      headers: { Authorization: this.getToken() },
+    });
   }
 
   async patch<T>(path: string, payload?: { [key: string]: any }) {
     const url = parseApiURL(path);
-    return axios.patch<IApiResponse<T>>(url, payload);
+    return axios.patch<IApiResponse<T>>(url, payload, {
+      headers: { Authorization: this.getToken() },
+    });
   }
 
   async delete<T>(path: string, searchParams?: { [key: string]: any }) {
     const url = parseApiURL(path, searchParams);
-    return axios.delete<IApiResponse<T>>(url);
+    return axios.delete<IApiResponse<T>>(url, {
+      headers: { Authorization: this.getToken() },
+    });
   }
 }
 
