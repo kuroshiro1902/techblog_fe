@@ -4,7 +4,6 @@ import useAuthStore from '@/stores/auth.store';
 import Link from 'next/link';
 import * as React from 'react';
 import defaultAvatar from '@/assets/default_avt.png';
-
 import { cn } from '@/lib/utils';
 import {
   NavigationMenu,
@@ -20,41 +19,30 @@ import { useLoadingStore } from '@/stores/loading.store';
 import { useRouter } from 'next/navigation';
 import { AuthService } from '@/services/auth/auth.service';
 
-const components: { title: string; href: string; description: string }[] = [
+export type IHeaderTab = {
+  title?: string;
+  href?: string;
+  description?: string;
+  children?: { title?: string; href?: string; description?: string }[];
+};
+
+const items: IHeaderTab[] = [
+  { title: 'Trang chủ', href: ROUTE.HOME },
   {
-    title: 'Alert Dialog',
-    href: '/docs/primitives/alert-dialog',
-    description:
-      'A modal dialog that interrupts the user with important content and expects a response.',
-  },
-  {
-    title: 'Hover Card',
-    href: '/docs/primitives/hover-card',
-    description:
-      'For sighted users to preview content available behind a link.',
-  },
-  {
-    title: 'Progress',
-    href: '/docs/primitives/progress',
-    description:
-      'Displays an indicator showing the completion progress of a task, typically displayed as a progress bar.',
-  },
-  {
-    title: 'Scroll-area',
-    href: '/docs/primitives/scroll-area',
-    description: 'Visually or semantically separates content.',
-  },
-  {
-    title: 'Tabs',
-    href: '/docs/primitives/tabs',
-    description:
-      'A set of layered sections of content—known as tab panels—that are displayed one at a time.',
-  },
-  {
-    title: 'Tooltip',
-    href: '/docs/primitives/tooltip',
-    description:
-      'A popup that displays information related to an element when the element receives keyboard focus or the mouse hovers over it.',
+    title: 'Danh mục',
+    children: [
+      {
+        title: 'Bài viết nổi bật',
+        description: 'Các bài viết được nhiều lượt xem nhất trong tháng.',
+        href: '/hot',
+      },
+      {
+        title: 'Tác giả nổi bật',
+        description: 'Các tác giả được đánh giá cao.',
+        href: '/best-author',
+      },
+      { title: 'Học tập', href: '/learn' },
+    ],
   },
 ];
 
@@ -138,34 +126,68 @@ function Header() {
         <NavigationMenu>
           <NavigationMenuList>
             <NavigationMenuItem>
-              <NavigationMenuTrigger>Components</NavigationMenuTrigger>
-              <NavigationMenuContent>
-                <ul className='grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] '>
-                  {components.map((component) => (
-                    <ListItem
-                      key={component.title}
-                      title={component.title}
-                      href={component.href}
-                    >
-                      {component.description}
-                    </ListItem>
-                  ))}
-                </ul>
-              </NavigationMenuContent>
-            </NavigationMenuItem>
-            <NavigationMenuItem>
-              <Link href='/docs' legacyBehavior passHref>
-                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                  Documentation
+              <Link href={ROUTE.HOME} legacyBehavior passHref>
+                <NavigationMenuLink
+                  className={cn(navigationMenuTriggerStyle(), 'h-12')}
+                >
+                  <Image
+                    src='/logo1.png'
+                    alt=''
+                    style={{ width: 48, height: 48 }}
+                    width={480}
+                    height={480}
+                    quality={95}
+                    className='rounded-full'
+                  />
                 </NavigationMenuLink>
               </Link>
             </NavigationMenuItem>
           </NavigationMenuList>
         </NavigationMenu>
+        <NavigationMenu>
+          <NavigationMenuList>
+            {items.map((item, index) => {
+              if (item.children && item.children.length > 0) {
+                return (
+                  <NavigationMenuItem key={index}>
+                    <NavigationMenuTrigger className='h-12'>
+                      {item.title}
+                    </NavigationMenuTrigger>
+                    <NavigationMenuContent>
+                      <ul className='grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] '>
+                        {item.children.map((subitem, i) => (
+                          <ListItem
+                            key={i}
+                            title={subitem.title}
+                            href={subitem.href}
+                          >
+                            {subitem.description}
+                          </ListItem>
+                        ))}
+                      </ul>
+                    </NavigationMenuContent>
+                  </NavigationMenuItem>
+                );
+              } else {
+                return (
+                  <NavigationMenuItem key={index}>
+                    <Link href={item.href ?? '#'} legacyBehavior passHref>
+                      <NavigationMenuLink
+                        className={cn(navigationMenuTriggerStyle(), 'h-12')}
+                      >
+                        {item.title}
+                      </NavigationMenuLink>
+                    </Link>
+                  </NavigationMenuItem>
+                );
+              }
+            })}
+          </NavigationMenuList>
+        </NavigationMenu>
         <NavigationMenu contentPosition='right'>
           <NavigationMenuList>
             <NavigationMenuItem>
-              <NavigationMenuTrigger>
+              <NavigationMenuTrigger className='h-12'>
                 <Image
                   src={user.avatarUrl ?? defaultAvatar}
                   alt={user.name ?? "User's avatar"}
@@ -178,8 +200,8 @@ function Header() {
                 </span>
               </NavigationMenuTrigger>
               <NavigationMenuContent>
-                <ul className='grid gap-1 p-4 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]'>
-                  <li className='row-span-4'>
+                <ul className='grid gap-1 p-4'>
+                  <li className='row-span-1'>
                     <NavigationMenuLink asChild>
                       <a
                         className='relative flex items-center h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-4 no-underline outline-none focus:shadow-md'
