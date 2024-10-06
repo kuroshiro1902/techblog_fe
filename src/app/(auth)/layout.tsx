@@ -22,8 +22,8 @@ function AuthPage({ children }: any) {
     return () => setLoading(true);
   }, [user?.id]);
   return (
-    <div>
-      <h1>Chào mừng bạn đến với Techblog</h1>
+    <div className='max-w-screen-lg m-auto'>
+      <h1 className='text-primary font'>Chào mừng bạn đến với Techblog</h1>
       {loading && <h3>Đang xác thực người dùng...</h3>}
       {!loading && children}
     </div>

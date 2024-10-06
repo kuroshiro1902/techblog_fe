@@ -4,6 +4,7 @@ import './globals.css';
 import Header from '@/components/layout/header';
 import { Toaster } from '@/components/ui/toaster';
 import UserIdentify from '@/routes/UserIdentify';
+import { LoadingOverlay } from '@/components/layout/loading';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -20,6 +21,7 @@ export default function RootLayout({
   return (
     <html lang='vi'>
       <body className={inter.className}>
+        <LoadingOverlay width={90} height={90} />
         <UserIdentify />
         <Toaster />
         <Header />

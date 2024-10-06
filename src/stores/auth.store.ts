@@ -1,3 +1,4 @@
+'use client';
 import { IUser } from '@/models/user.model';
 import { tokenKey } from '@/services/api';
 import { create } from 'zustand';

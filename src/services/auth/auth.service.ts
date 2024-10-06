@@ -28,6 +28,9 @@ export const AuthService = Object.freeze({
       localStorage.setItem(tokenKey, token);
     }
   },
+  deleteToken: () => {
+    localStorage.removeItem(tokenKey);
+  },
   getToken: () => {
     return localStorage.getItem(tokenKey);
   },

@@ -13,6 +13,7 @@ import { AuthService } from '@/services/auth/auth.service';
 import { getApiErrorMessage } from '@/utils/getApiErrorMessage.util';
 import { userSchema } from '@/models/user.model';
 import FormInput from '@/components/form/formInput';
+import useAuthStore from '@/stores/auth.store';
 
 const loginFormSchema = z.object({
   username: userSchema.shape.username,
@@ -21,6 +22,7 @@ const loginFormSchema = z.object({
 
 function LoginPage() {
   const { toast } = useToast();
+  const setUser = useAuthStore((s) => s.setUser);
   const searchParams = useSearchParams();
   const [submitMessage, setSubmitMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -41,6 +43,7 @@ function LoginPage() {
       const { data, isSuccess } = await AuthService.login(values);
       if (isSuccess && data) {
         AuthService.setToken(data.token);
+        setUser(data.user);
         toast({
           title: 'Đăng nhập thành công!',
         });
