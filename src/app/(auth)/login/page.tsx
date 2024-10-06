@@ -14,6 +14,7 @@ import { getApiErrorMessage } from '@/utils/getApiErrorMessage.util';
 import { userSchema } from '@/models/user.model';
 import FormInput from '@/components/form/formInput';
 import useAuthStore from '@/stores/auth.store';
+import { useLoadingStore } from '@/stores/loading.store';
 
 const loginFormSchema = z.object({
   username: userSchema.shape.username,
@@ -23,6 +24,7 @@ const loginFormSchema = z.object({
 function LoginPage() {
   const { toast } = useToast();
   const setUser = useAuthStore((s) => s.setUser);
+  const executeWithLoading = useLoadingStore((s) => s.executeWithLoading);
   const searchParams = useSearchParams();
   const [submitMessage, setSubmitMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -39,23 +41,29 @@ function LoginPage() {
   const onSubmit = async (values: z.infer<typeof loginFormSchema>) => {
     setSubmitMessage('');
     setIsSubmitting(true);
-    try {
-      const { data, isSuccess } = await AuthService.login(values);
-      if (isSuccess && data) {
-        AuthService.setToken(data.token);
-        setUser(data.user);
-        toast({
-          title: 'Đăng nhập thành công!',
-        });
-        setTimeout(() => {
-          const redirectUrl = searchParams.get('redirect') || ROUTE.HOME;
-          router.replace(redirectUrl);
-        }, 100);
+    executeWithLoading(
+      async () => {
+        const { data, isSuccess } = await AuthService.login(values);
+        if (isSuccess && data) {
+          AuthService.setToken(data.token);
+          setUser(data.user);
+          toast({
+            variant: 'success',
+            title: 'Đăng nhập thành công!',
+          });
+          setTimeout(() => {
+            const redirectUrl = searchParams.get('redirect') || ROUTE.HOME;
+            router.replace(redirectUrl);
+          }, 100);
+        }
+      },
+      {
+        onError: (error) => {
+          setSubmitMessage(getApiErrorMessage(error));
+          setIsSubmitting(false);
+        },
       }
-    } catch (error: any) {
-      setSubmitMessage(getApiErrorMessage(error));
-      setIsSubmitting(false);
-    }
+    );
   };
 
   return (

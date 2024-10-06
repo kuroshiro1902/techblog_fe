@@ -5,55 +5,55 @@
 @layer base {
   :root {
     /* Màu nền chính hoặc màu của container */
-    --background: 222, 47%, 11%;
+    --background: 222 47% 11%;
     /* Màu văn bản chính hoặc nội dung trên nền */
-    --foreground: 216, 33%, 68%;
+    --foreground: 216 33% 68%;
     /* Màu nền của thẻ (card) */
-    --card: 222, 47%, 11%;
+    --card: 222 47% 11%;
     /* Màu văn bản trên thẻ */
-    --card-foreground: 216, 33%, 68%;
+    --card-foreground: 216 33% 68%;
     /* Màu nền của popover hoặc tooltip */
-    --popover: 222, 47%, 11%;
+    --popover: 222 47% 11%;
     /* Màu văn bản trong popover hoặc tooltip */
-    --popover-foreground: 216, 33%, 68%;
+    --popover-foreground: 216 33% 68%;
     /* Màu nút bấm chính hoặc các yếu tố nổi bật */
-    --primary: 199, 89%, 49%;
+    --primary: 199 89% 49%;
     /* Màu văn bản hoặc icon trên nút bấm chính */
-    --primary-foreground: 0, 100%, 50%;
+    --primary-foreground: 0 0% 93%;
     /* Màu nút bấm phụ hoặc yếu tố ít nổi bật hơn */
-    --secondary: 216, 33%, 20%;
+    --secondary: 216 33% 20%;
     /* Màu văn bản hoặc icon trên nút bấm phụ */
-    --secondary-foreground: 199, 89%, 49%;
+    --secondary-foreground: 199 89% 49%;
     /* Màu nền cho các thành phần ít quan trọng */
-    --muted: 216, 33%, 20%;
+    --muted: 216 33% 20%;
     /* Màu văn bản trên nền muted */
-    --muted-foreground: 215.4, 16.3%, 46.9%;
+    --muted-foreground: 215.4 16.3% 46.9%;
     /* Màu nhấn cho các yếu tố trang trí */
-    --accent: 216, 33%, 20%;
+    --accent: 216 33% 20%;
     /* Màu văn bản hoặc icon trên nền accent */
-    --accent-foreground: 199, 89%, 49%;
+    --accent-foreground: 199 89% 49%;
     /* Màu nền cho cảnh báo hoặc hành động phá hủy */
-    --destructive: 0, 0%, 85%;
+    --destructive: 0 0% 85%;
     /* Màu văn bản hoặc icon trên nền destructive */
-    --destructive-foreground: 0, 100%, 50%;
+    --destructive-foreground: 0 100% 50%;
     /* Màu viền cho các thành phần có khung */
-    --border: 214.3, 31.8%, 91.4%;
+    --border: 214.3 31.8% 91.4%;
     /* Màu nền của các trường nhập liệu (input) */
-    --input: 214.3, 31.8%, 91.4%;
+    --input: 214.3 31.8% 91.4%;
     /* Màu viền khi các thành phần được focus */
-    --ring: 216, 33%, 68%;
-    --radius: 0.5rem;
+    --ring: 216 33% 68%;
     /* Độ bo góc cho các thành phần */
+    --radius: 0.5rem;
     /* Màu đầu tiên cho biểu đồ */
-    --chart-1: 12, 76%, 61%;
+    --chart-1: 12 76% 61%;
     /* Màu thứ hai cho biểu đồ */
-    --chart-2: 173, 58%, 39%;
+    --chart-2: 173 58% 39%;
     /* Màu thứ ba cho biểu đồ */
-    --chart-3: 197, 37%, 24%;
+    --chart-3: 197 37% 24%;
     /* Màu thứ tư cho biểu đồ */
-    --chart-4: 43, 74%, 66%;
+    --chart-4: 43 74% 66%;
     /* Màu thứ năm cho biểu đồ */
-    --chart-5: 27, 87%, 67%;
+    --chart-5: 27 87% 67%;
   }
 
 

@@ -23,7 +23,7 @@ function AuthPage({ children }: any) {
   }, [user?.id]);
   return (
     <div className='max-w-screen-lg m-auto'>
-      <h1 className='text-primary font'>Chào mừng bạn đến với Techblog</h1>
+      <h1 className='text-primary font'>Chào mừng bạn đến với Techsolve</h1>
       {loading && <h3>Đang xác thực người dùng...</h3>}
       {!loading && children}
     </div>

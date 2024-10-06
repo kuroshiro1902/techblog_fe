@@ -7,6 +7,9 @@ type LoadingOptions = {
    * @default true
    */
   stopWhenFinish?: boolean;
+  onSuccess?: () => any;
+  onError?: (error: any) => any;
+  onFinally?: () => any;
 };
 
 interface LoadingData {
@@ -30,11 +33,15 @@ export const useLoadingStore = create<LoadingData>((set) => ({
     fakeDelay(async () => {
       try {
         await cb();
+        await options?.onSuccess?.();
+      } catch (err) {
+        await options?.onError?.(err);
       } finally {
         const stopWhenFinish = options?.stopWhenFinish ?? true;
         if (stopWhenFinish) {
           set({ isLoading: false });
         }
+        await options?.onFinally?.();
       }
     });
   },

@@ -1,7 +1,7 @@
 import { ENV } from '@/environments/env';
 import axios from 'axios';
 
-export const tokenKey = 'techblog-access-token';
+export const tokenKey = 'techsolve-access-token';
 
 export interface IApiResponse<T> {
   isSuccess: boolean;
