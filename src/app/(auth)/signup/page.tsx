@@ -67,7 +67,7 @@ function SignupPage() {
 
   return (
     <div className='max-w-md mx-auto p-4' key={'' + Math.random()}>
-      <h2 className='text-2xl font-bold mb-6'>Đăng Nhập</h2>
+      <h2 className='text-2xl font-bold mb-6'>Đăng Ký</h2>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
           <FormInput
@@ -103,7 +103,7 @@ function SignupPage() {
             placeholder='Ngày sinh (tháng/ngày/năm)'
             type='date'
           />
-          <FormMessage>{submitMessage}</FormMessage>
+          <FormMessage className='text-red-500'>{submitMessage}</FormMessage>
           <Button disabled={isSubmitting} type='submit'>
             Đăng Ký
           </Button>

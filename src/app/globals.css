@@ -94,3 +94,7 @@
     @apply bg-background text-foreground;
   }
 }
+
+.right-0 {
+  right: 0;
+}
