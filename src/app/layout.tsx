@@ -5,8 +5,14 @@ import Header from '@/components/layout/header';
 import { Toaster } from '@/components/ui/toaster';
 import UserIdentify from '@/routes/UserIdentify';
 import { LoadingOverlay } from '@/components/layout/loading';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
 
-const inter = Inter({ subsets: ['latin'] });
+dayjs.extend(utc);
+dayjs.extend(timezone);
+
+const inter = Inter({ subsets: ['vietnamese'] });
 
 export const metadata: Metadata = {
   title: 'Create Next App',

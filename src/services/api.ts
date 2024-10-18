@@ -23,14 +23,10 @@ export function parseApiURL(path: string, searchParams?: any) {
     for (const key in searchParams) {
       if (Array.isArray(searchParams[key])) {
         for (const value of searchParams[key]) {
-          urlSearch.push(
-            `${encodeURIComponent(key)}=${encodeURIComponent(value)}`
-          );
+          urlSearch.push(`${encodeURIComponent(key)}=${encodeURIComponent(value)}`);
         }
       } else {
-        urlSearch.push(
-          `${encodeURIComponent(key)}=${encodeURIComponent(searchParams[key])}`
-        );
+        urlSearch.push(`${encodeURIComponent(key)}=${encodeURIComponent(searchParams[key])}`);
       }
     }
     searchQuery = urlSearch.length > 0 ? `?${urlSearch.join('&')}` : '';
@@ -81,7 +77,35 @@ class ApiService {
   }
 }
 
+class ServerSideApiService {
+  async get<T>(path: string, searchParams?: { [key: string]: any }) {
+    const url = parseApiURL(path, searchParams);
+    return axios.get<IApiResponse<T>>(url);
+  }
+
+  async post<T>(path: string, payload?: { [key: string]: any }) {
+    const url = parseApiURL(path);
+    return axios.post<IApiResponse<T>>(url, payload);
+  }
+
+  async put<T>(path: string, payload?: { [key: string]: any }) {
+    const url = parseApiURL(path);
+    return axios.put<IApiResponse<T>>(url, payload);
+  }
+
+  async patch<T>(path: string, payload?: { [key: string]: any }) {
+    const url = parseApiURL(path);
+    return axios.patch<IApiResponse<T>>(url, payload);
+  }
+
+  async delete<T>(path: string, searchParams?: { [key: string]: any }) {
+    const url = parseApiURL(path, searchParams);
+    return axios.delete<IApiResponse<T>>(url);
+  }
+}
+
 export const API = new ApiService();
+export const ServerSideAPI = new ServerSideApiService();
 
 export const apiPath = (root: string) => {
   if (root.startsWith('/')) root = root.substring(1);

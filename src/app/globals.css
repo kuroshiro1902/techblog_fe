@@ -98,3 +98,15 @@
 .right-0 {
   right: 0;
 }
+
+/* Hide arrow in number input Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Hide arrow in number input Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}

@@ -1,5 +1,4 @@
 import ProtectedRoute from '@/routes/ProtectedRoute';
-import { useState } from 'react';
 
 export const fetchCache = 'force-no-store';
 
