@@ -8,18 +8,14 @@ export interface ISVGProps extends React.SVGProps<SVGSVGElement> {
   className?: string;
 }
 
-export const LoadingOverlay = ({
-  size = 24,
-  className,
-  ...props
-}: ISVGProps) => {
+export const LoadingOverlay = ({ size = 24, className, ...props }: ISVGProps) => {
   const isLoading = useLoadingStore((s) => s.isLoading);
   return (
     <React.Fragment>
       {
         <div
           className={cn(
-            'absolute inset-0 bg-black bg-opacity-60 z-[9999] justify-center items-center',
+            'fixed inset-0 bg-black bg-opacity-60 z-[9999] justify-center items-center min-h-full min-w-full',
             { flex: isLoading, hidden: !isLoading }
           )}
         >

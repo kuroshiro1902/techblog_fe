@@ -52,31 +52,39 @@ const items: IHeaderTab[] = [
   },
 ];
 
-const ListItem = React.forwardRef<
-  React.ElementRef<'a'>,
-  React.ComponentPropsWithoutRef<'a'>
->(({ className, title, children, href = '/', ...props }, ref) => {
-  return (
-    <li>
-      <NavigationMenuLink asChild>
-        <Link
-          href={href}
-          ref={ref}
-          className={cn(
-            'block select-none space-y-1 rounded-md px-3 py-2 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground',
-            className
-          )}
-          {...props}
-        >
-          <div className='text-sm font-medium leading-none'>{title}</div>
-          <p className='line-clamp-2 text-sm leading-snug text-muted-foreground'>
-            {children}
-          </p>
-        </Link>
-      </NavigationMenuLink>
-    </li>
-  );
-});
+const ListItem = React.forwardRef<React.ElementRef<'a'>, React.ComponentPropsWithoutRef<'a'>>(
+  ({ className, title, children, href = '#', ...props }, ref) => {
+    return (
+      <li>
+        <NavigationMenuLink asChild>
+          <a
+            href={href}
+            ref={ref}
+            className={cn(
+              'block select-none space-y-1 rounded-md px-3 py-2 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground',
+              className
+            )}
+            onClick={async (e) => {
+              if (props.onClick) {
+                props.onClick(e);
+                if (!href || href === '#') {
+                  e.preventDefault();
+                }
+                window.location.reload();
+              }
+            }}
+            {...props}
+          >
+            <div className='text-sm font-medium leading-none'>{title}</div>
+            <p className='line-clamp-2 text-sm leading-snug text-muted-foreground'>
+              {children}
+            </p>
+          </a>
+        </NavigationMenuLink>
+      </li>
+    );
+  }
+);
 
 const HeaderMenu = ({
   items = [],
@@ -92,9 +100,7 @@ const HeaderMenu = ({
           if (item.children && item.children.length > 0) {
             return (
               <NavigationMenuItem key={index}>
-                <NavigationMenuTrigger className='h-12'>
-                  {item.title}
-                </NavigationMenuTrigger>
+                <NavigationMenuTrigger className='h-12'>{item.title}</NavigationMenuTrigger>
                 <NavigationMenuContent>
                   <ul className='grid max-w-max gap-3 p-4 md:w-[240px] md:grid-cols-1 '>
                     {item.children.map((subitem, i) => (
@@ -102,6 +108,7 @@ const HeaderMenu = ({
                         key={i}
                         title={subitem.title}
                         href={subitem.href}
+                        onClick={subitem.onClick}
                       >
                         {subitem.description}
                       </ListItem>
@@ -136,6 +143,7 @@ function Header() {
   const router = useRouter();
   const executeWithLoading = useLoadingStore((s) => s.executeWithLoading);
   const handleLogout = async () => {
+    console.log('logout');
     executeWithLoading(async () => {
       AuthService.deleteToken();
       setUser(undefined);
@@ -183,17 +191,15 @@ function Header() {
                       quality={40}
                       className='rounded-full'
                     />
-                    <span className='ml-2'>
-                      Xin chào, {user.name.split(' ').pop()}
-                    </span>
+                    <span className='ml-2'>Xin chào, {user.name.split(' ').pop()}</span>
                   </>
                 ),
                 children: [
-                  { title: 'Trang cá nhân', href: 'user/' + user.id },
-                  { title: 'Viết bài', href: '' },
+                  { title: 'Trang cá nhân', href: '#' + user.id },
+                  { title: 'Viết bài', href: '/post/create' },
                   {
                     title: 'Bài viết yêu thích',
-                    href: '',
+                    href: '#',
                     description: 'Những bài viết bạn đã yêu thích.',
                   },
                   { title: 'Đăng xuất', onClick: handleLogout },

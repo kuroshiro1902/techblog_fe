@@ -1,23 +1,16 @@
 import { Control, FieldPath, FieldValues } from 'react-hook-form';
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '../ui/form';
-import { Input } from '../ui/input';
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '../ui/form';
+import { Input, InputProps } from '../ui/input'; // Import InputProps từ shadcn/ui nếu có
 import { HTMLInputTypeAttribute } from 'react';
 
 interface FormInputProps<
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>
-> {
+> extends InputProps {
+  // Kế thừa từ InputProps để nhận thêm các props của Input
   control: Control<TFieldValues>;
   name: TName;
   label?: string;
-  placeholder?: string;
-  type?: HTMLInputTypeAttribute;
 }
 
 const FormInput = <
@@ -27,8 +20,10 @@ const FormInput = <
   control,
   name,
   label,
-  placeholder,
+  placeholder = 'Nhập giá trị...',
   type,
+  required,
+  ...props // Nhận tất cả các props của Input
 }: FormInputProps<TFieldValues, TName>) => {
   return (
     <FormField
@@ -36,15 +31,21 @@ const FormInput = <
       name={name}
       render={({ field }) => (
         <FormItem>
-          <FormLabel>{label}</FormLabel>
+          {label && (
+            <FormLabel>
+              {required && <span className='text-red-500'>* </span>}
+              {label}
+            </FormLabel>
+          )}
           <FormControl>
             <Input
               type={type}
-              placeholder={placeholder || 'Nhập giá trị...'}
+              placeholder={placeholder}
               {...field}
+              {...props} // Truyền tất cả các props vào Input
             />
           </FormControl>
-          <FormMessage />
+          <FormMessage className='text-red-500' />
         </FormItem>
       )}
     />

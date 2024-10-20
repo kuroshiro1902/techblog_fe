@@ -26,12 +26,12 @@ const LinkPost = ({ post, children }: any) => (
 function PostCard({ post }: PostCardProps) {
   return (
     // <Link href={post?.slug ? `post/${post.slug}` : ''} target='_blank'>
-    <Card className='h-full'>
+    <Card className='h-full flex flex-col justify-between'>
       <CardHeader>
         <CardTitle className='text-xl'>
-          <LinkPost post={post}>{post?.title?.substring(0, 40)}...</LinkPost>
+          <LinkPost post={post}>{post?.title?.substring(0, 30)}...</LinkPost>
         </CardTitle>
-        <CardDescription className='flex flex-wrap items-center justify-between'>
+        <CardDescription className=''>
           <Link
             title={post?.author.name}
             href={`/user/${post?.author?.id}`}
@@ -48,13 +48,23 @@ function PostCard({ post }: PostCardProps) {
             />
             {post?.author?.name?.substring(0, 30)}
           </Link>
-          <span>-</span>
+
           <time className='text-[12px] pt-[2px]'>
             {post?.createdAt
               ? `${dayjs(post?.createdAt).tz('Asia/Bangkok').format('HH:mm DD/MM/YYYY')}`
               : ''}
           </time>
         </CardDescription>
+      </CardHeader>
+      {/* <CardContent>
+        <div
+          className='dynammic-content'
+          dangerouslySetInnerHTML={{
+            __html: (post?.content?.substring(0, 50) ?? '') + '...',
+          }}
+        ></div>
+      </CardContent> */}
+      <CardFooter className='block'>
         {post?.thumbnailUrl && (
           <LinkPost post={post}>
             <Image
@@ -67,18 +77,8 @@ function PostCard({ post }: PostCardProps) {
             />
           </LinkPost>
         )}
-      </CardHeader>
-      <CardContent>
-        <div
-          className='dynammic-content'
-          dangerouslySetInnerHTML={{
-            __html: (post?.content?.substring(0, 50) ?? '') + '...',
-          }}
-        ></div>
-      </CardContent>
-      <CardFooter className=''>
         <LinkPost post={post}>
-          <Button>Xem chi tiết</Button>
+          <Button className='mt-3'>Xem chi tiết</Button>
         </LinkPost>
       </CardFooter>
     </Card>

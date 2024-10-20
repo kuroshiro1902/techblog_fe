@@ -1,0 +1,31 @@
+#editor {
+  .ql-stroke,
+  .ql-fill,
+  .ql-picker-label::before {
+    stroke: #ccc;
+    color: #ccc;
+  }
+  .ql-picker-label:hover {
+    &::after,
+    &::before {
+      stroke: #06c;
+      color: #06c;
+    }
+    .ql-stroke {
+      stroke: #06c;
+      color: #06c;
+    }
+  }
+  .ql-formats button:hover {
+    stroke: #06c;
+    color: #06c;
+    .ql-stroke,
+    .ql-fill,
+    .ql-picker-label::before {
+      stroke: inherit;
+    }
+  }
+  .ql-editor {
+    min-height: 200px;
+  }
+}

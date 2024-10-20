@@ -27,6 +27,13 @@ export const postSchema = z.object({
 
 export type TPose = z.infer<typeof postSchema>;
 
+export const createPostSchema = postSchema.pick({
+  title: true,
+  content: true,
+  isPublished: true,
+  thumbnailUrl: true,
+});
+
 export const postFilterSchema = z.object({
   pageIndex: z.number().min(1).default(1),
   pageSize: z.number().min(0).default(12),

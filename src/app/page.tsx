@@ -39,17 +39,17 @@ export default async function HomePage({
         <h3 className='text-primary'>Bài viết dành cho bạn</h3>
         <p>Những bài viết phù hợp với sở thích của bạn.</p>
         <div className='py-4'></div>
-        <ul className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 justify-items-center items-center'>
+        <ul className='grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 gap-4 justify-items-center items-center'>
           {postData?.data.map((post, i) => {
             return (
-              <li key={i} className='max-w-[300px] h-full'>
+              <li key={i} className='max-w-[300px] w-full h-full'>
                 <PostCard post={post} />
               </li>
             );
           })}
         </ul>
       </div>
-      <div>
+      <div className='mt-4 flex justify-center'>
         <Pagination totalPage={postData.pageInfo.totalPage} />
       </div>
     </main>

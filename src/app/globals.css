@@ -92,6 +92,7 @@
 
   body {
     @apply bg-background text-foreground;
+    overflow: auto !important;
   }
 }
 
@@ -109,4 +110,16 @@ input::-webkit-inner-spin-button {
 /* Hide arrow in number input Firefox */
 input[type=number] {
   -moz-appearance: textfield;
+}
+
+.ql-editor img {
+  display: initial !important;
+}
+
+.ql-editor a {
+  color: hsl(var(--primary)) !important;
+}
+
+.ql-editor a:hover {
+  text-decoration: underline;
 }
