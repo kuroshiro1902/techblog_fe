@@ -41,7 +41,7 @@ function LoginPage() {
   const onSubmit = async (values: z.infer<typeof loginFormSchema>) => {
     setSubmitMessage('');
     setIsSubmitting(true);
-    executeWithLoading(
+    await executeWithLoading(
       async () => {
         const { data, isSuccess } = await AuthService.login(values);
         if (isSuccess && data) {

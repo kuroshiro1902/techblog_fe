@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { userSchema } from './user.model';
+import { categorySchema } from './category.model';
 
 export const postSchema = z.object({
   id: z
@@ -21,6 +22,7 @@ export const postSchema = z.object({
     .optional(),
   isPublished: z.boolean().default(true),
   author: userSchema.pick({ id: true, name: true, avatarUrl: true }),
+  categories: z.array(categorySchema).default([]),
   createdAt: z.string().default(''),
   updatedAt: z.string().default(''),
 });
@@ -32,7 +34,7 @@ export const createPostSchema = postSchema.pick({
   content: true,
   isPublished: true,
   thumbnailUrl: true,
-});
+}).extend({categories: z.array(categorySchema.pick({ id: true })).default([])});
 
 export const postFilterSchema = z.object({
   pageIndex: z.number().min(1).default(1),

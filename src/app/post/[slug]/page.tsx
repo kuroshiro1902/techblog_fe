@@ -6,6 +6,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import defaultAvt from '@/assets/default_avt.png';
 import dayjs from 'dayjs';
+import { Badge } from '@/components/ui/badge';
 
 async function PostDetailPage({ params }: { params: { slug: string } }) {
   try {
@@ -37,6 +38,14 @@ async function PostDetailPage({ params }: { params: { slug: string } }) {
               ? `${dayjs(post?.createdAt).tz('Asia/Bangkok').format('HH:mm DD/MM/YYYY')}`
               : ''}
           </time>
+        </div>
+        <div className='inline-flex items-center gap-4 py-3 text-sm'>
+          <span>Thể loại: </span>
+            {post.categories.map((category, i)=>
+          <Link href={'/?category='+category.id} key={i}>
+            <Badge>{category.name}</Badge>
+          </Link>
+            )}
         </div>
         <div className='p-3'></div>
         {post.thumbnailUrl && (

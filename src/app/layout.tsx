@@ -8,6 +8,7 @@ import { LoadingOverlay } from '@/components/layout/loading';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
+import { Suspense } from 'react';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -31,7 +32,7 @@ export default function RootLayout({
         <UserIdentify />
         <Toaster />
         <Header />
-        {children}
+        <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
       </body>
     </html>
   );

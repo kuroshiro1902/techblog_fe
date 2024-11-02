@@ -19,16 +19,18 @@ function ProtectedRoute({ setAuth }: ProtectedRouteProps) {
   const executeWithLoading = useLoadingStore((s) => s.executeWithLoading);
   useEffect(() => {
     console.log('execute authentication');
-
-    executeWithLoading(async () => {
-      if (!AuthService.getToken()) {
-        router.replace(
-          ROUTE.LOGIN + `?redirect=${encodeURIComponent(window.location.pathname)}`
-        );
-      } else {
-        setAuth?.(true);
-      }
-    });
+    const auth = async () => {
+      return await executeWithLoading(async () => {
+        if (!AuthService.getToken()) {
+          router.replace(
+            ROUTE.LOGIN + `?redirect=${encodeURIComponent(window.location.pathname)}`
+          );
+        } else {
+          setAuth?.(true);
+        }
+      });
+    };
+    auth();
     return () => setAuth?.(false);
   }, [router, user]);
   return <Fragment />;

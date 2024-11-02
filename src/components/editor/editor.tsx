@@ -123,5 +123,6 @@ const Editor = memo(
   },
   () => true
 );
+Editor.displayName = 'Editor';
 
 export default Editor;

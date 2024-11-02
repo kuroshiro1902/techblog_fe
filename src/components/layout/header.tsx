@@ -86,6 +86,8 @@ const ListItem = React.forwardRef<React.ElementRef<'a'>, React.ComponentPropsWit
   }
 );
 
+ListItem.displayName = 'ListItem';
+
 const HeaderMenu = ({
   items = [],
   contentPosition = 'left',
@@ -144,7 +146,7 @@ function Header() {
   const executeWithLoading = useLoadingStore((s) => s.executeWithLoading);
   const handleLogout = async () => {
     console.log('logout');
-    executeWithLoading(async () => {
+    await executeWithLoading(async () => {
       AuthService.deleteToken();
       setUser(undefined);
       setTimeout(() => {

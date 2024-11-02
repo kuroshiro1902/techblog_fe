@@ -20,7 +20,7 @@ function AuthPage({ children }: any) {
     }
 
     return () => setLoading(true);
-  }, [user?.id]);
+  }, [user?.id, router, searchParams]);
   return (
     <div className='max-w-screen-lg m-auto'>
       <h1 className='text-primary font'>Chào mừng bạn đến với Techsolve</h1>

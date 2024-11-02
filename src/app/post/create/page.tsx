@@ -1,9 +1,16 @@
 'use client';
 import Editor from '@/components/editor/editor';
 import FormInput from '@/components/form/formInput';
-import { Form } from '@/components/ui/form';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { postSchema } from '@/models/post.model';
+import { createPostSchema, postSchema } from '@/models/post.model';
 import ProtectedRoute from '@/routes/ProtectedRoute';
 import { useLoadingStore } from '@/stores/loading.store';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -18,6 +25,10 @@ import { toast } from '@/hooks/use-toast';
 import { getApiErrorMessage } from '@/utils/getApiErrorMessage.util';
 import { useRouter } from 'next/navigation';
 import ThumbnailImg from '@/components/post/thumbnail-image';
+import { Select } from '@/components/ui/select';
+import { MultiSelect } from '@/components/ui/multi-select';
+import { TCategory } from '@/models/category.model';
+import { CategoryService } from '@/services/category/category.service';
 
 const SelectThumbnailBtn = ({ onSuccess }: { onSuccess: (url: string) => void }) => {
   return (
@@ -64,27 +75,24 @@ const SelectThumbnailBtn = ({ onSuccess }: { onSuccess: (url: string) => void })
   );
 };
 
-const createPostSchema = postSchema.pick({
-  content: true,
-  isPublished: true,
-  thumbnailUrl: true,
-  title: true,
-});
 function PostCreatePage() {
-  const [auth, setAuth] = useState(true);
+  const [categories, setCategories] = useState<TCategory[]>([]);
+  const [auth, setAuth] = useState(false);
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const executeWithLoading = useLoadingStore((s) => s.executeWithLoading);
   const router = useRouter();
   //
   const [thumbnailUrl, setThumbnailUrl] = useState('');
   const [content, setContent] = useState('');
-  const setIsLoading = useLoadingStore((s) => s.setIsLoading);
+  // const setIsLoading = useLoadingStore((s) => s.setIsLoading);
   const form = useForm<z.input<typeof createPostSchema>>({
     resolver: zodResolver(createPostSchema),
     defaultValues: {
       title: '',
       content: '',
       thumbnailUrl: '',
+      categories: [],
       isPublished: true,
     },
     disabled: isSubmitting,
@@ -106,9 +114,9 @@ function PostCreatePage() {
     form.setValue('content', content);
     await executeWithLoading(
       async () => {
-        form.handleSubmit(async (post) => {
+        form.handleSubmit(async (post) => {          
           const createdPost = await PostService.createPost(post);
-          alert(JSON.stringify(createdPost));
+          // alert(JSON.stringify(createdPost));
           toast({ variant: 'success', title: 'Tạo bài viết thành công.' });
           setTimeout(() => {
             console.log({ createdPost });
@@ -126,13 +134,17 @@ function PostCreatePage() {
 
   useEffect(() => {
     form.setValue('thumbnailUrl', thumbnailUrl ?? '');
-  }, [thumbnailUrl]);
+  }, [thumbnailUrl, form]);
 
   useEffect(() => {
     if (auth) {
-      setIsLoading(false);
+      CategoryService.filterCategories({}).then((res)=>{
+        setCategories(res.data)
+      }).catch((err)=>{
+        toast({variant: 'destructive', title: getApiErrorMessage(err) });
+        setCategories([]);
+      })
     } else {
-      setIsLoading(true);
     }
   }, [auth]);
   return (
@@ -191,6 +203,28 @@ function PostCreatePage() {
                 hidden
               />
               <Editor />
+              <FormField
+                control={form.control}
+                name='categories'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Thể loại</FormLabel>
+                    <FormControl>
+                      <MultiSelect
+                        {...field}
+                        options={categories.map((c)=>({label: c.name, value: ''+c.id}))}
+                        onValueChange={(values)=>field.onChange(values.map((v)=>({id: +v})))}
+                        placeholder='Chọn thể loại'
+                        value={field.value?.map(({id})=>`${id}`)}
+                        // variant='inverted'
+                        // animation={2}
+                        maxCount={3}
+                      />
+                    </FormControl>
+                    <FormMessage className='text-red-500' />
+                  </FormItem>
+                )}
+              />
               <FormInput
                 disabled
                 type='checkbox'
