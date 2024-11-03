@@ -16,7 +16,7 @@ export const CategoryService = Object.freeze({
     }
   },
   // getDetailPost: async (filter: { slug: string }) => {
-  //   const res = await ServerSideAPI.get<TPose>(path('/detail'), filter);
+  //   const res = await ServerSideAPI.get<TPost>(path('/detail'), filter);
   //   const { isSuccess, data, message } = res.data;
   //   if (isSuccess && data) {
   //     return data;
@@ -25,7 +25,7 @@ export const CategoryService = Object.freeze({
   //   }
   // },
   // createPost: async (post: z.input<typeof createPostSchema>) => {
-  //   const res = await API.post<TPose>(path('/create'), { data: post });
+  //   const res = await API.post<TPost>(path('/create'), { data: post });
   //   const { isSuccess, data, message } = res.data;
   //   if (isSuccess && data) {
   //     return data;

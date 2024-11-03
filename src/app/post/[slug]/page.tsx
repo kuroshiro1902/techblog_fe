@@ -7,6 +7,7 @@ import Link from 'next/link';
 import defaultAvt from '@/assets/default_avt.png';
 import dayjs from 'dayjs';
 import { Badge } from '@/components/ui/badge';
+import NavigateToUpdatePage from './components/navigateToUpdatePage';
 
 async function PostDetailPage({ params }: { params: { slug: string } }) {
   try {
@@ -14,6 +15,7 @@ async function PostDetailPage({ params }: { params: { slug: string } }) {
 
     return (
       <main className='max-w-screen-lg m-auto flex flex-col justify-between lg:p-8 p-4'>
+        <NavigateToUpdatePage postSlug={post.slug} authorId={post.author.id} />
         <h1 className='mb-2'>{post?.title}</h1>
         <div className='inline-flex items-center gap-4'>
           <Link

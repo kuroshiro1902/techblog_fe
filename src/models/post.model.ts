@@ -27,7 +27,7 @@ export const postSchema = z.object({
   updatedAt: z.string().default(''),
 });
 
-export type TPose = z.infer<typeof postSchema>;
+export type TPost = z.infer<typeof postSchema>;
 
 export const createPostSchema = postSchema.pick({
   title: true,

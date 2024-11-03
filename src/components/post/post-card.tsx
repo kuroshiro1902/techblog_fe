@@ -9,12 +9,12 @@ import {
   CardHeader,
   CardTitle,
 } from '../ui/card';
-import { TPose } from '@/models/post.model';
+import { TPost } from '@/models/post.model';
 import Image from 'next/image';
 import { Button } from '../ui/button';
 
 export interface PostCardProps {
-  post?: TPose;
+  post?: TPost;
 }
 
 const LinkPost = ({ post, children }: any) => (
