@@ -15,7 +15,7 @@ export const LoadingOverlay = ({ size = 24, className, ...props }: ISVGProps) =>
       {
         <div
           className={cn(
-            'fixed inset-0 bg-black bg-opacity-60 z-[9999] justify-center items-center min-h-full min-w-full',
+            'fixed inset-0 bg-black bg-opacity-60 z-[10000] justify-center items-center min-h-full min-w-full',
             { flex: isLoading, hidden: !isLoading }
           )}
         >

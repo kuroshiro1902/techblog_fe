@@ -2,15 +2,16 @@ import { Control, FieldPath, FieldValues } from 'react-hook-form';
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '../ui/form';
 import { Input, InputProps } from '../ui/input'; // Import InputProps từ shadcn/ui nếu có
 import { HTMLInputTypeAttribute } from 'react';
+import { Textarea } from '../ui/textarea';
 
 interface FormInputProps<
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>
 > extends InputProps {
-  // Kế thừa từ InputProps để nhận thêm các props của Input
   control: Control<TFieldValues>;
   name: TName;
   label?: string;
+  type?: HTMLInputTypeAttribute | 'textarea';
 }
 
 const FormInput = <
@@ -38,12 +39,26 @@ const FormInput = <
             </FormLabel>
           )}
           <FormControl>
-            <Input
-              type={type}
-              placeholder={placeholder}
-              {...field}
-              {...props} // Truyền tất cả các props vào Input
-            />
+            {type === 'textarea' ? (
+              <Textarea
+                placeholder={placeholder}
+                {...field}
+                {...(props as React.TextareaHTMLAttributes<HTMLTextAreaElement>)}
+                onChange={(e) =>
+                  field.onChange(e as unknown as React.ChangeEvent<HTMLTextAreaElement>)
+                }
+              />
+            ) : (
+              <Input
+                type={type}
+                placeholder={placeholder}
+                {...field}
+                {...props}
+                onChange={(e) =>
+                  field.onChange(e as unknown as React.ChangeEvent<HTMLInputElement>)
+                } // Type assertion here
+              />
+            )}
           </FormControl>
           <FormMessage className='text-red-500' />
         </FormItem>

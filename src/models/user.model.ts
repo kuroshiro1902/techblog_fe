@@ -45,7 +45,16 @@ export const userUpdateSchema = z.object({
   password: userSchema.shape.password.optional(),
   email: userSchema.shape.email.optional(),
   avatarUrl: userSchema.shape.avatarUrl.optional(),
-  roles: userSchema.shape.roles.optional(),
-});
+  dob: userSchema.shape.dob.optional(),
+  // roles: userSchema.shape.roles.optional(),
+})
+
+export const userPasswordUpdateSchema = z.object({
+  password: userSchema.shape.password.optional(),
+  confirmPassword: userSchema.shape.password.optional(),
+}).refine((value) => value.password === value.confirmPassword, {
+  message: 'Mật khẩu không khớp, vui lòng thử lại.',
+  path: ['confirmPassword'],
+});;
 
 export type IUser = z.infer<typeof userSchema>;

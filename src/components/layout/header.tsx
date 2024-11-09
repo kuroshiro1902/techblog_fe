@@ -197,7 +197,7 @@ function Header() {
                   </>
                 ),
                 children: [
-                  { title: 'Trang cá nhân', href: '#' + user.id },
+                  { title: 'Trang cá nhân', href: ROUTE.ME },
                   { title: 'Viết bài', href: '/post/create' },
                   {
                     title: 'Bài viết yêu thích',
