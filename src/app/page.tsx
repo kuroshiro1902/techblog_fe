@@ -34,7 +34,7 @@ export default async function HomePage({
 
   return (
     <main className='max-w-screen-lg m-auto flex flex-col justify-between lg:p-8 p-4 '>
-      <SearchForm defaultValue={filter.search} />
+      <SearchForm defaultValue={filter} />
       <div className='main'>
         <h3 className='text-primary'>Bài viết dành cho bạn</h3>
         <p>Những bài viết phù hợp với sở thích của bạn.</p>

@@ -4,6 +4,8 @@
 
 @layer base {
   :root {
+    --light-primary: 180 90% 43%;
+    --white: 199 69% 84%;
     /* Màu nền chính hoặc màu của container */
     --background: 222 47% 11%;
     /* Màu văn bản chính hoặc nội dung trên nền */
@@ -94,6 +96,13 @@
     @apply bg-background text-foreground;
     overflow: auto !important;
   }
+}
+
+.text-linear-primary {
+  background: var(--text-linear-primary, linear-gradient(90deg, hsl(var(--primary)), hsl(var(--light-primary)) 51%, hsl(var(--primary))) 0/ 200%);
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
 }
 
 .text-overflow-max-line-4 {

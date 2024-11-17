@@ -3,6 +3,7 @@ import { API, apiPath, ServerSideAPI, tokenKey } from '../api';
 import { TFilterResponse } from '@/models/filter-response.model';
 import { createPostSchema, TPost, TPostFilter } from '@/models/post.model';
 import { z } from 'zod';
+import { TRating } from '@/models/rating.model';
 
 const path = apiPath('/posts');
 
@@ -61,4 +62,27 @@ export const PostService = Object.freeze({
   //     throw new Error(message);
   //   }
   // }
+  getOwnRatingOfPost: async (postId: number) => {
+    const res = await API.get<TRating>(path('/rating/'+postId));
+    const { isSuccess, data, message } = res.data;
+
+    if (isSuccess && data) {
+      return data;
+    } else {
+      throw new Error(message);
+    }
+  },
+  rating: async (postId: number, score: number) => {
+    const res = await API.put<{
+      score: number;
+      updatedAt: Date;
+    }>(path('/rating/' + postId), { score });
+    const { isSuccess, data, message } = res.data;
+
+    if (isSuccess && data) {
+      return data;
+    } else {
+      throw new Error(message);
+    }
+  },
 });

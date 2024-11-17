@@ -9,6 +9,7 @@ import dayjs from 'dayjs';
 import { Badge } from '@/components/ui/badge';
 import NavigateToUpdatePage from './components/navigateToUpdatePage';
 import Rating from './components/rating';
+import { Ratings } from './components/ratings';
 
 async function PostDetailPage({ params }: { params: { slug: string } }) {
   try {
@@ -17,7 +18,18 @@ async function PostDetailPage({ params }: { params: { slug: string } }) {
     return (
       <main className='max-w-screen-lg m-auto flex flex-col justify-between lg:p-8 p-4'>
         <NavigateToUpdatePage postSlug={post.slug} authorId={post.author.id} />
-        <h1 className='mb-2'>{post?.title}</h1>
+        <h1 className='mb-2 text-linear-primary'>{post?.title}</h1>
+        <Ratings score={post.rating?.score ?? 0} />
+        <div className='inline-flex items-center gap-4 text-sm'>
+          <span>Thể loại: </span>
+          {post.categories.length === 0 && <i>Không xác định</i>}
+          {post.categories.map((category, i) => (
+            <Link href={'/?category=' + category.id} key={i}>
+              <Badge>{category.name}</Badge>
+            </Link>
+          ))}
+        </div>
+        <div className='py-2'></div>
         <div className='inline-flex items-center gap-4'>
           <Link
             title={post?.author.name}
@@ -42,14 +54,7 @@ async function PostDetailPage({ params }: { params: { slug: string } }) {
               : ''}
           </time>
         </div>
-        <div className='inline-flex items-center gap-4 py-3 text-sm'>
-          <span>Thể loại: </span>
-          {post.categories.map((category, i) => (
-            <Link href={'/?category=' + category.id} key={i}>
-              <Badge>{category.name}</Badge>
-            </Link>
-          ))}
-        </div>
+
         <div className='p-3'></div>
         {post.thumbnailUrl && (
           <div className='image-ctn text-center relative'>

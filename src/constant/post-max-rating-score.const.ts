@@ -1,0 +1,1 @@
+export const POST_MAX_RATING_SCORE = 5;

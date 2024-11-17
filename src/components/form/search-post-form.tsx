@@ -21,7 +21,7 @@ import { useForm } from 'react-hook-form';
 export interface ISearchPostParams {
   categoryId?: number[] | number;
   search?: string;
-  pageIndex?: number;
+  // pageIndex?: number;
   orderBy?: string;
 }
 
@@ -50,7 +50,7 @@ function SearchPostForm({
   const {
     categoryId: defaultCategoryIds = [],
     orderBy: defaultOrderBy = '',
-    pageIndex: defaultPageIndex = 1,
+    // pageIndex: defaultPageIndex = 1,
     search: defaultSearch = '',
   } = defaultValue;
   const router = useRouter();
@@ -62,7 +62,7 @@ function SearchPostForm({
       categoryId: defaultCategoryIds,
       search: defaultSearch,
       orderBy: defaultOrderBy,
-      pageIndex: defaultPageIndex,
+      // pageIndex: defaultPageIndex,
     },
   });
 
@@ -77,10 +77,13 @@ function SearchPostForm({
   // Debounced form submission
   const handleSubmit = debounce(() => {
     const values = form.getValues();
-    const query = queryString.stringify(values, {
-      skipNull: true,
-      skipEmptyString: true,
-    });
+    const query = queryString.stringify(
+      { ...values, pageIndex: 1 },
+      {
+        skipNull: true,
+        skipEmptyString: true,
+      }
+    );
 
     router.push(`/post?${query}`);
     setIsSubmitting(false);

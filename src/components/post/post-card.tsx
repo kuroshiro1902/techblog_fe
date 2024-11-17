@@ -13,7 +13,7 @@ import { TPost } from '@/models/post.model';
 import Image from 'next/image';
 import { Button } from '../ui/button';
 import { formatDate } from 'date-fns';
-import { EyeIcon } from 'lucide-react';
+import { EyeIcon, StarIcon } from 'lucide-react';
 import { Badge } from '../ui/badge';
 
 export interface PostCardProps {
@@ -22,7 +22,7 @@ export interface PostCardProps {
 
 const LinkPost = ({ post, children }: any) => (
   <Link
-    className='text-overflow-max-line-2'
+    className='text-overflow-max-line-2 hover:text-primary transition-colors'
     href={post?.slug ? `post/${post.slug}` : ''}
     target='_blank'
     title={post?.title}
@@ -79,9 +79,22 @@ function PostCard({ post }: PostCardProps) {
               />
             </LinkPost>
           </span>
-          <small title={(post?.views || 0) + ' lượt xem'}>
-            {post?.views} <EyeIcon className='inline' size={14} />
-          </small>
+          <span className='flex gap-3 flex-wrap'>
+            <small
+              className='inline-flex gap-1 items-center'
+              title={(post?.views || 0) + ' lượt xem'}
+            >
+              {post?.views} <EyeIcon className='inline' size={14} />
+            </small>
+            {post?.rating?.score && (
+              <small
+                className='inline-flex gap-1 items-center'
+                title={'Điểm đánh giá trung bình: ' + post.rating.score}
+              >
+                {post.rating.score} <StarIcon className='inline' size={12} />
+              </small>
+            )}
+          </span>
         </CardDescription>
         <LinkPost post={post}>
           <Button className='mt-3 float-right'>Xem chi tiết</Button>

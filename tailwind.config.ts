@@ -19,6 +19,7 @@ const config = {
     },
     extend: {
       colors: {
+        white: 'hsl(var(--white))',
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',
@@ -78,10 +79,10 @@ const config = {
     require('tailwindcss-animate'),
     function ({ addBase }: any) {
       addBase({
-        h1: { fontSize: '2.5rem', fontWeight: '800' }, // h1 mặc định
-        h2: { fontSize: '2rem', fontWeight: '700' }, // h2 mặc định
-        h3: { fontSize: '1.75rem', fontWeight: '600' }, // h3 mặc định
-        h4: { fontSize: '1.5rem', fontWeight: '600' }, // h4 mặc định
+        h1: { fontSize: '2.5rem', fontWeight: '800', color: 'hsl(var(--white))' }, // h1 mặc định
+        h2: { fontSize: '2rem', fontWeight: '700', color: 'hsl(var(--white))' }, // h2 mặc định
+        h3: { fontSize: '1.75rem', fontWeight: '600', }, // h3 mặc định
+        h4: { fontSize: '1.5rem', fontWeight: '600', }, // h4 mặc định
         h5: { fontSize: '1.25rem', fontWeight: '500' }, // h5 mặc định
         h6: { fontSize: '1rem', fontWeight: '500' }, // h6 mặc định
       });
