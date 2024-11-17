@@ -9,11 +9,11 @@
     /* Màu văn bản chính hoặc nội dung trên nền */
     --foreground: 216 33% 68%;
     /* Màu nền của thẻ (card) */
-    --card: 222 47% 11%;
+    --card: 222 44% 13%;
     /* Màu văn bản trên thẻ */
     --card-foreground: 216 33% 68%;
     /* Màu nền của popover hoặc tooltip */
-    --popover: 222 47% 11%;
+    --popover: 222 44% 13%;
     /* Màu văn bản trong popover hoặc tooltip */
     --popover-foreground: 216 33% 68%;
     /* Màu nút bấm chính hoặc các yếu tố nổi bật */
@@ -37,9 +37,9 @@
     /* Màu văn bản hoặc icon trên nền destructive */
     --destructive-foreground: 0 100% 50%;
     /* Màu viền cho các thành phần có khung */
-    --border: 214.3 31.8% 91.4%;
+    --border: 216 33% 20%;
     /* Màu nền của các trường nhập liệu (input) */
-    --input: 214.3 31.8% 91.4%;
+    --input: 216 33% 20%;
     /* Màu viền khi các thành phần được focus */
     --ring: 216 33% 68%;
     /* Độ bo góc cho các thành phần */
@@ -102,6 +102,15 @@
   -webkit-line-clamp: 4;
   /* number of lines to show */
   line-clamp: 4;
+  -webkit-box-orient: vertical;
+}
+
+.text-overflow-max-line-2 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  /* number of lines to show */
+  line-clamp: 2;
   -webkit-box-orient: vertical;
 }
 

@@ -34,8 +34,8 @@ export const PostService = Object.freeze({
       throw new Error(message);
     }
   },
-  updatePost:  async (postId: number, post: z.input<typeof createPostSchema>) => {
-    const res = await API.put<TPost>(path('/update/'+postId), { data: post });
+  updatePost: async (postId: number, post: z.input<typeof createPostSchema>) => {
+    const res = await API.put<TPost>(path('/update/' + postId), { data: post });
     const { isSuccess, data, message } = res.data;
     if (isSuccess && data) {
       return data;
@@ -43,4 +43,22 @@ export const PostService = Object.freeze({
       throw new Error(message);
     }
   },
+  getOwnPosts: async () => {
+    const res = await API.get<TFilterResponse<TPost>>(path('/me'));
+    const { isSuccess, data, message } = res.data;
+    if (isSuccess && data?.data) {
+      return data.data;
+    } else {
+      throw new Error(message);
+    }
+  },
+  // getPostsOfAuthor: async (authorId: number) => {
+  //   const res = await ServerSideAPI.get<TPost>(path('?authorId='+authorId), );
+  //   const { isSuccess, data, message } = res.data;
+  //   if (isSuccess && data) {
+  //     return data;
+  //   } else {
+  //     throw new Error(message);
+  //   }
+  // }
 });

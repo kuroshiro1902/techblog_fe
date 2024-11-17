@@ -209,7 +209,7 @@ function PostUpdatePage({ params }: { params: { slug: string } }) {
       {!auth && <p>Đang xác thực ...</p>}
       {auth && (
         <main>
-          <h2 className='mb-2'>Tạo bài viết mới</h2>
+          <h2 className='mb-2'>Chỉnh sửa bài viết</h2>
 
           <Form {...form}>
             <form onSubmit={(e) => e.preventDefault()} className='space-y-4'>

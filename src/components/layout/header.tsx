@@ -158,7 +158,7 @@ function Header() {
     <React.Fragment>
       <header
         id='header'
-        className='bg-background max-w-full justify-between flex px-4 py-2 fixed top-0 inset-x-0 z-[9998]'
+        className='bg-background max-w-full justify-between flex px-4 py-2 fixed top-0 inset-x-0 z-[9998] shadow-lg shadow-popover'
       >
         <HeaderMenu
           items={[

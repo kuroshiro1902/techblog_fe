@@ -8,6 +8,7 @@ import defaultAvt from '@/assets/default_avt.png';
 import dayjs from 'dayjs';
 import { Badge } from '@/components/ui/badge';
 import NavigateToUpdatePage from './components/navigateToUpdatePage';
+import Rating from './components/rating';
 
 async function PostDetailPage({ params }: { params: { slug: string } }) {
   try {
@@ -43,11 +44,11 @@ async function PostDetailPage({ params }: { params: { slug: string } }) {
         </div>
         <div className='inline-flex items-center gap-4 py-3 text-sm'>
           <span>Thể loại: </span>
-            {post.categories.map((category, i)=>
-          <Link href={'/?category='+category.id} key={i}>
-            <Badge>{category.name}</Badge>
-          </Link>
-            )}
+          {post.categories.map((category, i) => (
+            <Link href={'/?category=' + category.id} key={i}>
+              <Badge>{category.name}</Badge>
+            </Link>
+          ))}
         </div>
         <div className='p-3'></div>
         {post.thumbnailUrl && (
@@ -63,7 +64,7 @@ async function PostDetailPage({ params }: { params: { slug: string } }) {
             ></div>
             <div
               className='absolute inset-0 z-[-1] rounded-sm'
-              style={{ backgroundColor: 'rgba(0,0,0, 0.5)', filter: 'blur(10px)' }}
+              style={{ backgroundColor: 'rgba(0,0,0, 0.7)', filter: 'blur(10px)' }}
             ></div>
             <Image
               className='max-w-lg m-auto'
@@ -79,6 +80,7 @@ async function PostDetailPage({ params }: { params: { slug: string } }) {
           className='mt-6 dynamic-content ql-editor'
           dangerouslySetInnerHTML={{ __html: post.content }}
         ></div>
+        <Rating postId={post.id} />
       </main>
     );
   } catch (error: any) {

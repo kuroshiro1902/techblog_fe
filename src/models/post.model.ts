@@ -20,6 +20,7 @@ export const postSchema = z.object({
     .string()
     .max(255, { message: 'Url thumbnail không được vượt quá 500 ký tự.' })
     .optional(),
+  views: z.number().int(),
   isPublished: z.boolean().default(true),
   author: userSchema.pick({ id: true, name: true, avatarUrl: true }),
   categories: z.array(categorySchema).default([]),
@@ -37,9 +38,12 @@ export const createPostSchema = postSchema.pick({
 }).extend({categories: z.array(categorySchema.pick({ id: true })).default([])});
 
 export const postFilterSchema = z.object({
+  categoryId: z.array(z.number().int().positive()).default([]),
   pageIndex: z.number().min(1).default(1),
   pageSize: z.number().min(0).default(12),
+  orderBy: z.string().trim().regex(/^[a-zA-Z_]+-(asc|desc)$/, {
+    message: "OrderBy must be in the format 'field-asc' or 'field-desc'",
+  }).default('createdAt-desc'),
   search: z.string().trim().default(''),
-  author: z.string().trim().optional(),
 });
 export type TPostFilter = z.input<typeof postFilterSchema>;
