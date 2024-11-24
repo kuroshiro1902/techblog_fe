@@ -1,7 +1,6 @@
 'use client';
 import dynamic from 'next/dynamic';
-import { memo, RefObject, useEffect, useRef, useState } from 'react';
-// import ReactQuill from 'react-quill';
+import { memo, RefObject, useRef } from 'react';
 import 'react-quill-new/dist/quill.snow.css';
 import './style.scss';
 import ReactQuill from 'react-quill-new';
@@ -21,108 +20,124 @@ const QuillEditor = dynamic(
     Component.displayName = 'ReactQuillComponent';
     return Component;
   },
-  {
-    ssr: false,
-  }
+  { ssr: false }
 );
-QuillEditor.displayName = 'ReactQuillComponent';
+
+interface EditorProps extends ReactQuill.ReactQuillProps {
+  enableImage?: boolean;
+  className?: string;
+}
 
 const Editor = memo(
-  () => {
-    console.log('rerender Editor.');
-
+  ({
+    value,
+    onChange,
+    placeholder = 'Nội dung...',
+    enableImage = false,
+    modules: customModules,
+    formats: customFormats,
+    className = '',
+    ...props
+  }: EditorProps) => {
     const ref = useRef<ReactQuill>(null);
     const uploadImgButtonRef = useRef<HTMLButtonElement>(null);
-    const modules: ReactQuill.ReactQuillProps['modules'] = {
+
+    const handleChange = (content: string, d: any, s: any, e: any) => {
+      const editor = ref.current?.getEditor();
+      const hasText = editor?.getText().trim().length !== 0;
+      if (!hasText) {
+        onChange?.('', d, s, e);
+        return;
+      }
+      onChange?.(content, d, s, e);
+    };
+
+    const defaultModules = {
       toolbar: {
         container: [
-          [{ header: [1, 2, 3, false] }],
-          ['bold', 'italic', 'underline', 'strike'],
-          [{ list: 'ordered' }, { list: 'bullet' }],
-          ['link', 'image'],
-          [{ align: [] }],
+          ['bold', 'italic', 'underline'],
+          ['link', ...(enableImage ? ['image'] : [])],
           ['clean'],
         ],
-        handlers: {
-          image: function (open: boolean) {
-            open && uploadImgButtonRef?.current?.click();
-          },
-        },
+        handlers: enableImage
+          ? {
+              image: function (open: boolean) {
+                open && uploadImgButtonRef?.current?.click();
+              },
+            }
+          : undefined,
       },
       clipboard: {
         matchVisual: false,
       },
     };
 
-    const formats = [
-      'header',
+    const defaultFormats = [
       'bold',
       'italic',
       'underline',
-      'strike',
-      'list',
-      // 'bullet',
       'link',
-      'image',
-      'align', // Add align to formats
+      ...(enableImage ? ['image'] : []),
     ];
 
     return (
-      <div id='editor' spellCheck={false}>
-        <CldUploadWidget
-          uploadPreset='techblog_upload_preset'
-          config={{
-            cloud: {
-              cloudName: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
-              apiKey: process.env.NEXT_PUBLIC_CLOUD_API_KEY,
-              apiSecret: process.env.NEXT_PUBLIC_CLOUD_API_SECRET,
-            },
-          }}
-          options={{
-            maxFiles: 1,
-            maxFileSize: 500 * 1024,
-            uploadPreset: 'techblog_upload_preset',
-            folder: 'techblog_images',
-            resourceType: 'image',
-          }}
-          onSuccess={({ info }) => {
-            const quill = ref.current?.getEditor();
-            const range = quill?.getSelection();
-            if (range) {
-              if (typeof info === 'string') {
-                quill?.insertEmbed(range.index, 'image', info);
-              } else if (typeof info !== 'undefined') {
-                quill?.insertEmbed(range.index, 'image', info.secure_url);
-              } else {
-                alert('Lỗi gán ảnh vào bài viết, vui lòng thử lại.');
+      <div spellCheck={false} className={'editor ' + className}>
+        {enableImage && (
+          <CldUploadWidget
+            uploadPreset='techblog_upload_preset'
+            config={{
+              cloud: {
+                cloudName: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
+                apiKey: process.env.NEXT_PUBLIC_CLOUD_API_KEY,
+                apiSecret: process.env.NEXT_PUBLIC_CLOUD_API_SECRET,
+              },
+            }}
+            options={{
+              maxFiles: 1,
+              maxFileSize: 500 * 1024,
+              uploadPreset: 'techblog_upload_preset',
+              folder: 'techblog_images',
+              resourceType: 'image',
+            }}
+            onSuccess={({ info }) => {
+              const quill = ref.current?.getEditor();
+              const range = quill?.getSelection();
+              if (range) {
+                if (typeof info === 'string') {
+                  quill?.insertEmbed(range.index, 'image', info);
+                } else if (typeof info !== 'undefined') {
+                  quill?.insertEmbed(range.index, 'image', info.secure_url);
+                } else {
+                  alert('Lỗi gán ảnh vào bài viết, vui lòng thử lại.');
+                }
               }
-            }
-          }}
-        >
-          {({ open }) => {
-            return (
+            }}
+          >
+            {({ open }) => (
               <button
                 type='button'
                 hidden
                 ref={uploadImgButtonRef}
                 onClick={() => open()}
               ></button>
-            );
-          }}
-        </CldUploadWidget>
+            )}
+          </CldUploadWidget>
+        )}
         <QuillEditor
-          placeholder='Nội dung bài viết...'
           forwardedRef={ref}
-          id='quill'
-          modules={modules}
-          formats={formats}
-          defaultValue={''}
+          value={value}
+          onChange={handleChange}
+          placeholder={placeholder}
+          modules={customModules || defaultModules}
+          formats={customFormats || defaultFormats}
+          {...props}
         />
       </div>
     );
   },
-  () => true
+  (prevProps, nextProps) => prevProps.value === nextProps.value
 );
+
 Editor.displayName = 'Editor';
 
 export default Editor;

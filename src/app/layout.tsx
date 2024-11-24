@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
-import Header from '@/components/layout/header';
+import Header from '@/components/layout/header/header';
 import { Toaster } from '@/components/ui/toaster';
 import UserIdentify from '@/routes/UserIdentify';
 import { LoadingOverlay } from '@/components/layout/loading';
@@ -27,7 +27,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang='vi'>
-      <body className={inter.className} style={{ overflow: 'auto' }}>
+      <body className={inter.className + 'min-w-[320px]'} style={{ overflow: 'auto' }}>
         <LoadingOverlay width={90} height={90} />
         <UserIdentify />
         <Toaster />

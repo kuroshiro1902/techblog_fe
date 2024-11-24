@@ -21,7 +21,7 @@ import { useForm } from 'react-hook-form';
 export interface ISearchPostParams {
   categoryId?: number[] | number;
   search?: string;
-  // pageIndex?: number;
+  pageIndex?: number;
   orderBy?: string;
 }
 

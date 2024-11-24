@@ -5,6 +5,61 @@
 @layer base {
   :root {
     --light-primary: 180 90% 43%;
+    --white: 0 0% 100%;
+    /* Màu nền chính hoặc màu của container */
+    --background: 0 0% 100%;
+    /* Màu văn bản chính hoặc nội dung trên nền */
+    --foreground: 222 47% 25%;
+    /* Màu nền của thẻ (card) */
+    --card: 0 0% 98%;
+    /* Màu văn bản trên thẻ */
+    --card-foreground: 222 47% 11%;
+    /* Màu nền của popover hoặc tooltip */
+    --popover: 0 0% 98%;
+    /* Màu văn bản trong popover hoặc tooltip */
+    --popover-foreground: 222 47% 11%;
+    /* Màu nút bấm chính hoặc các yếu tố nổi bật */
+    --primary: 199 89% 49%;
+    /* Màu văn bản hoặc icon trên nút bấm chính */
+    --primary-foreground: 0 0% 100%;
+    /* Màu nút bấm phụ hoặc yếu tố ít nổi bật hơn */
+    --secondary: 216 33% 90%;
+    /* Màu văn bản hoặc icon trên nút bấm phụ */
+    --secondary-foreground: 199 89% 49%;
+    /* Màu nền cho các thành phần ít quan trọng */
+    --muted: 216 33% 90%;
+    /* Màu văn bản trên nền muted */
+    --muted-foreground: 215.4 16.3% 46.9%;
+    /* Màu nhấn cho các yếu tố trang trí */
+    --accent: 216 33% 90%;
+    /* Màu văn bản hoặc icon trên nền accent */
+    --accent-foreground: 199 89% 49%;
+    /* Màu nền cho cảnh báo hoặc hành động phá hủy */
+    --destructive: 0 84% 95%;
+    /* Màu văn bản hoặc icon trên nền destructive */
+    --destructive-foreground: 0 100% 50%;
+    /* Màu viền cho các thành phần có khung */
+    --border: 216 33% 90%;
+    /* Màu nền của các trường nhập liệu (input) */
+    --input: 216 33% 90%;
+    /* Màu viền khi các thành phần được focus */
+    --ring: 222 47% 11%;
+    /* Độ bo góc cho các thành phần */
+    --radius: 0.5rem;
+    /* Màu đầu tiên cho biểu đồ */
+    --chart-1: 12 76% 61%;
+    /* Màu thứ hai cho biểu đồ */
+    --chart-2: 173 58% 39%;
+    /* Màu thứ ba cho biểu đồ */
+    --chart-3: 197 37% 24%;
+    /* Màu thứ tư cho biểu đồ */
+    --chart-4: 43 74% 66%;
+    /* Màu thứ năm cho biểu đồ */
+    --chart-5: 27 87% 67%;
+  }
+
+  :root.dark {
+    --light-primary: 180 90% 43%;
     --white: 199 69% 84%;
     /* Màu nền chính hoặc màu của container */
     --background: 222 47% 11%;
@@ -57,34 +112,6 @@
     /* Màu thứ năm cho biểu đồ */
     --chart-5: 27 87% 67%;
   }
-
-
-  /* .dark {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
-  } */
 }
 
 @layer base {
@@ -99,7 +126,16 @@
 }
 
 .text-linear-primary {
-  background: var(--text-linear-primary, linear-gradient(90deg, hsl(var(--primary)), hsl(var(--light-primary)) 51%, hsl(var(--primary))) 0/ 200%);
+  background: var(
+    --text-linear-primary,
+    linear-gradient(
+        90deg,
+        hsl(var(--primary)),
+        hsl(var(--light-primary)) 51%,
+        hsl(var(--primary))
+      )
+      0/ 200%
+  );
   -webkit-background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
   background-clip: text !important;
@@ -135,7 +171,7 @@ input::-webkit-inner-spin-button {
 }
 
 /* Hide arrow in number input Firefox */
-input[type=number] {
+input[type='number'] {
   -moz-appearance: textfield;
 }
 

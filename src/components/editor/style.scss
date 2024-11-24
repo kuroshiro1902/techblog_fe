@@ -1,4 +1,4 @@
-#editor {
+.editor {
   .ql-stroke,
   .ql-fill,
   .ql-picker-label::before {
@@ -26,6 +26,6 @@
     }
   }
   .ql-editor {
-    min-height: 200px;
+    min-height: 160px;
   }
 }

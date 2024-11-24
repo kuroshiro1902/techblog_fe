@@ -8,8 +8,10 @@ import defaultAvt from '@/assets/default_avt.png';
 import dayjs from 'dayjs';
 import { Badge } from '@/components/ui/badge';
 import NavigateToUpdatePage from './components/navigateToUpdatePage';
-import Rating from './components/rating';
+import Rating from './components/own-rating';
 import { Ratings } from './components/ratings';
+import CommentSection from './components/comment-section';
+import DynamicContent from '@/components/common/dynamic-content';
 
 async function PostDetailPage({ params }: { params: { slug: string } }) {
   try {
@@ -81,11 +83,11 @@ async function PostDetailPage({ params }: { params: { slug: string } }) {
             />
           </div>
         )}
-        <div
-          className='mt-6 dynamic-content ql-editor'
-          dangerouslySetInnerHTML={{ __html: post.content }}
-        ></div>
+        <div className='mt-6'>
+          <DynamicContent>{post.content}</DynamicContent>
+        </div>
         <Rating postId={post.id} />
+        <CommentSection postId={post.id} />
       </main>
     );
   } catch (error: any) {

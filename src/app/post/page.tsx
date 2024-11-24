@@ -5,7 +5,7 @@ import { TFilterResponse } from '@/models/filter-response.model';
 import { postFilterSchema, TPost } from '@/models/post.model';
 import { PostService } from '@/services/post/post.service';
 
-export default async function HomePage({ searchParams }: { searchParams?: ISearchPostParams }) {
+export default async function PostPage({ searchParams }: { searchParams?: ISearchPostParams }) {
   const postData: TFilterResponse<TPost> = {
     data: [],
     pageInfo: { hasNextPage: false, pageIndex: 1, pageSize: 16, totalPage: 1 },
