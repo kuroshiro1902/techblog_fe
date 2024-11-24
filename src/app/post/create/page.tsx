@@ -9,23 +9,21 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { createPostSchema, postSchema } from '@/models/post.model';
+import { Button } from '@/components/ui/button';
+import { createPostSchema } from '@/models/post.model';
 import ProtectedRoute from '@/routes/ProtectedRoute';
 import { useLoadingStore } from '@/stores/loading.store';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { z } from 'zod';
-import { CldUploadWidget, CldUploadButton } from 'next-cloudinary';
-import { Button } from '@/components/ui/button';
+import { CldUploadWidget } from 'next-cloudinary';
 import Image from 'next/image';
 import { PostService } from '@/services/post/post.service';
 import { toast } from '@/hooks/use-toast';
 import { getApiErrorMessage } from '@/utils/getApiErrorMessage.util';
 import { useRouter } from 'next/navigation';
 import ThumbnailImg from '@/components/post/thumbnail-image';
-import { Select } from '@/components/ui/select';
 import { MultiSelect } from '@/components/ui/multi-select';
 import { TCategory } from '@/models/category.model';
 import { CategoryService } from '@/services/category/category.service';
@@ -78,14 +76,10 @@ const SelectThumbnailBtn = ({ onSuccess }: { onSuccess: (url: string) => void })
 function PostCreatePage() {
   const [categories, setCategories] = useState<TCategory[]>([]);
   const [auth, setAuth] = useState(false);
-
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [thumbnailUrl, setThumbnailUrl] = useState('');
   const executeWithLoading = useLoadingStore((s) => s.executeWithLoading);
   const router = useRouter();
-  //
-  const [thumbnailUrl, setThumbnailUrl] = useState('');
-  const [content, setContent] = useState('');
-  // const setIsLoading = useLoadingStore((s) => s.setIsLoading);
+
   const form = useForm<z.input<typeof createPostSchema>>({
     resolver: zodResolver(createPostSchema),
     defaultValues: {
@@ -95,31 +89,15 @@ function PostCreatePage() {
       categories: [],
       isPublished: true,
     },
-    disabled: isSubmitting,
   });
 
   const onSubmit = async () => {
-    // Set content to input
-    const editor = document.querySelector('#quill .ql-editor') as HTMLDivElement | null;
-    if (!editor) return;
-    const content = editor.innerHTML;
-    if (content === '<p><br></p>' || content.trim().length === 0) {
-      return form.setError('content', { message: 'Nội dung bài viết không được để trống.' });
-    }
-    if (content.length > 7000) {
-      return form.setError('content', {
-        message: `Nội dung bài viết không được vượt quá 7000 ký tự. Số lượng hiện tại: ${content.length} ký tự.`,
-      });
-    }
-    form.setValue('content', content);
     await executeWithLoading(
       async () => {
-        form.handleSubmit(async (post) => {          
+        form.handleSubmit(async (post) => {
           const createdPost = await PostService.createPost(post);
-          // alert(JSON.stringify(createdPost));
           toast({ variant: 'success', title: 'Tạo bài viết thành công.' });
           setTimeout(() => {
-            console.log({ createdPost });
             router.replace(`/post/${createdPost.slug}`);
           }, 100);
         })();
@@ -138,15 +116,17 @@ function PostCreatePage() {
 
   useEffect(() => {
     if (auth) {
-      CategoryService.filterCategories({}).then((res)=>{
-        setCategories(res.data)
-      }).catch((err)=>{
-        toast({variant: 'destructive', title: getApiErrorMessage(err) });
-        setCategories([]);
-      })
-    } else {
+      CategoryService.filterCategories({})
+        .then((res) => {
+          setCategories(res.data);
+        })
+        .catch((err) => {
+          toast({ variant: 'destructive', title: getApiErrorMessage(err) });
+          setCategories([]);
+        });
     }
   }, [auth]);
+
   return (
     <div className='max-w-screen-lg m-auto flex flex-col justify-between lg:p-8 p-4'>
       <ProtectedRoute setAuth={setAuth} />
@@ -162,19 +142,18 @@ function PostCreatePage() {
                 control={form.control}
                 name='title'
                 maxLength={200}
-                hidden
                 label='Tiêu đề'
                 placeholder='Tối đa 200 ký tự'
               />
+
               <FormInput
                 control={form.control}
                 name='thumbnailUrl'
                 maxLength={255}
-                style={{ display: 'none', visibility: 'hidden' }}
+                style={{ display: 'none' }}
                 hidden
                 label='Ảnh bìa'
                 id='thumbnaiUrl-input'
-                placeholder='Tối đa 255 ký tự'
               />
 
               {thumbnailUrl && (
@@ -183,26 +162,56 @@ function PostCreatePage() {
                   <Button
                     variant={'destructive'}
                     type='button'
-                    onClick={() => {
-                      setThumbnailUrl('');
-                    }}
+                    onClick={() => setThumbnailUrl('')}
                   >
                     Xóa ảnh bìa
                   </Button>
                 </>
               )}
               {!thumbnailUrl && <SelectThumbnailBtn onSuccess={setThumbnailUrl} />}
-              <FormInput
-                required
+
+              <FormField
                 control={form.control}
-                value={content}
                 name='content'
-                label='Nội dung'
-                style={{ display: 'none', visibility: 'hidden' }}
-                id='content-input'
-                hidden
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Nội dung</FormLabel>
+                    <FormControl>
+                      <Editor
+                        value={field.value}
+                        onChange={field.onChange}
+                        placeholder='Viết nội dung bài viết...'
+                        enableImage
+                        modules={{
+                          toolbar: {
+                            container: [
+                              [{ header: [1, 2, 3, false] }],
+                              ['bold', 'italic', 'underline', 'strike'],
+                              [{ list: 'ordered' }, { list: 'bullet' }],
+                              ['link', 'image'],
+                              [{ align: [] }],
+                              ['clean'],
+                            ],
+                          },
+                        }}
+                        formats={[
+                          'header',
+                          'bold',
+                          'italic',
+                          'underline',
+                          'strike',
+                          'list',
+                          'link',
+                          'image',
+                          'align',
+                        ]}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-              <Editor />
+
               <FormField
                 control={form.control}
                 name='categories'
@@ -211,13 +220,12 @@ function PostCreatePage() {
                     <FormLabel>Thể loại</FormLabel>
                     <FormControl>
                       <MultiSelect
-                        {...field}
-                        options={categories.map((c)=>({label: c.name, value: ''+c.id}))}
-                        onValueChange={(values)=>field.onChange(values.map((v)=>({id: +v})))}
+                        options={categories.map((c) => ({ label: c.name, value: '' + c.id }))}
+                        onValueChange={(values) =>
+                          field.onChange(values.map((v) => ({ id: +v })))
+                        }
                         placeholder='Chọn thể loại'
-                        value={field.value?.map(({id})=>`${id}`)}
-                        // variant='inverted'
-                        // animation={2}
+                        value={field.value?.map(({ id }) => `${id}`)}
                         maxCount={3}
                       />
                     </FormControl>
@@ -225,15 +233,16 @@ function PostCreatePage() {
                   </FormItem>
                 )}
               />
+
               <FormInput
-                disabled
                 type='checkbox'
                 control={form.control}
                 name='isPublished'
-                label='Xuất bản: '
+                label='Xuất bản'
                 className='h-[20px] w-[20px] inline ml-2'
                 defaultChecked
               />
+
               <Button type='submit' className='h-12 px-5' onClick={onSubmit}>
                 Đăng bài
               </Button>

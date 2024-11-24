@@ -4,6 +4,7 @@ import { TFilterResponse } from '@/models/filter-response.model';
 import { createPostSchema, TPost, TPostFilter } from '@/models/post.model';
 import { z } from 'zod';
 import { TRating } from '@/models/rating.model';
+import { TComment, TCreateComment } from '@/models/comment.model';
 
 const path = apiPath('/posts');
 
@@ -85,4 +86,30 @@ export const PostService = Object.freeze({
       throw new Error(message);
     }
   },
+
+  loadComments: async (params: {
+    postId?: number;
+    parentCommentId?: number;
+    pageIndex?: number;
+    pageSize?: number;
+  }) => {
+    const res = await ServerSideAPI.get<TFilterResponse<TComment>>(path('/comments'), params);
+    const { isSuccess, data, message } = res.data;
+    if (isSuccess && data) {
+      return data;
+    } else {
+      throw new Error(message);
+    }
+  },
+
+  createComment: async (comment: TCreateComment) => {
+    const res = await API.post<TComment>(path('/comment/create'), { data: comment });
+    const { isSuccess, data, message } = res.data;
+    if (isSuccess && data) {
+      return data;
+    } else {
+      throw new Error(message);
+    }
+  },
+
 });

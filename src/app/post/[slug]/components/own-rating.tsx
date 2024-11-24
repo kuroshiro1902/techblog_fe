@@ -9,6 +9,9 @@ import { TRating } from '@/models/rating.model';
 import { formatDate } from 'date-fns';
 import { useToast } from '@/components/hooks/use-toast';
 import { POST_MAX_RATING_SCORE } from '@/constant/post-max-rating-score.const';
+import useAuthStore from '@/stores/auth.store';
+import Link from 'next/link';
+import { ROUTE } from '@/routes/routes';
 
 interface RatingProps {
   postId: number;
@@ -20,6 +23,7 @@ interface RatingFormValues {
 
 function Rating({ postId }: RatingProps) {
   const { toast } = useToast();
+  const user = useAuthStore((s) => s.user);
   const [ownRating, setOwnRating] = useState<TRating>({
     score: undefined,
     updatedAt: undefined,
@@ -53,20 +57,24 @@ function Rating({ postId }: RatingProps) {
   };
 
   useEffect(() => {
-    PostService.getOwnRatingOfPost(postId).then((rating) => {
-      resetOwnRating(rating);
-    });
+    PostService.getOwnRatingOfPost(postId)
+      .then((rating) => {
+        resetOwnRating(rating);
+      })
+      .catch((err) => {});
   }, [postId, reset]);
 
   return (
     <div className='border-t-secondary border-t-2 py-2 my-2'>
       {ownRating.score && (
-        <p className='text-white'>
-          Bạn đã đánh giá <b>{ownRating.score}</b> sao cho bài viết này vào{' '}
-          {ownRating.updatedAt
-            ? formatDate(ownRating.updatedAt, 'HH:mm dd/MM/yyyy')
-            : '<Không xác định>'}
-          .
+        <p className='text-xs'>
+          <i>
+            Bạn đã đánh giá <b>{ownRating.score}</b> sao cho bài viết này vào{' '}
+            {ownRating.updatedAt
+              ? formatDate(ownRating.updatedAt, 'HH:mm dd/MM/yyyy')
+              : '<Không xác định>'}
+            .
+          </i>
         </p>
       )}
       {!ownRating.score && <p>Bạn chưa đánh giá bài viết này</p>}
@@ -109,12 +117,20 @@ function Rating({ postId }: RatingProps) {
         </fieldset>
 
         {/* Submit Button */}
-        <Button
-          type='submit'
-          disabled={isSubmitting || !isDirty} // Disable nếu đang submit hoặc form không thay đổi
-        >
-          {isSubmitting ? 'Đang gửi...' : 'Gửi đánh giá'}
-        </Button>
+        {user ? (
+          <Button
+            type='submit'
+            disabled={isSubmitting || !isDirty} // Disable nếu đang submit hoặc form không thay đổi
+          >
+            {isSubmitting ? 'Đang gửi...' : 'Gửi đánh giá'}
+          </Button>
+        ) : (
+          <Link href={ROUTE.LOGIN}>
+            <Button className='px-0' type='button' variant='link'>
+              Vui lòng đăng nhập để đánh giá bài viết
+            </Button>
+          </Link>
+        )}
       </form>
     </div>
   );
