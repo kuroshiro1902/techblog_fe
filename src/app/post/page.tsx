@@ -4,6 +4,29 @@ import PostCard from '@/components/post/post-card';
 import { TFilterResponse } from '@/models/filter-response.model';
 import { postFilterSchema, TPost } from '@/models/post.model';
 import { PostService } from '@/services/post/post.service';
+import { Metadata } from 'next';
+
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams?: ISearchPostParams;
+}): Promise<Metadata> {
+  const title = searchParams?.search
+    ? `Techblog - Tìm kiếm: ${searchParams.search}`
+    : 'Techblog - Danh sách bài viết';
+
+  return {
+    title,
+    description: 'Danh sách các bài viết, chia sẻ kiến thức lập trình và công nghệ mới nhất',
+    openGraph: {
+      title,
+      description: 'Danh sách các bài viết, chia sẻ kiến thức lập trình và công nghệ mới nhất',
+    },
+    alternates: {
+      canonical: '/post',
+    },
+  };
+}
 
 export default async function PostPage({ searchParams }: { searchParams?: ISearchPostParams }) {
   const postData: TFilterResponse<TPost> = {

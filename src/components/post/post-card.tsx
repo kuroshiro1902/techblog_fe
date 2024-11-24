@@ -43,7 +43,7 @@ function PostCard({ post }: PostCardProps) {
         <CardDescription className=''>
           <span className='block mb-1'>
             {post?.categories.slice(0, 2).map((c, i) => (
-              <Badge className='mr-1' key={i}>
+              <Badge className='mr-1 bg-foreground/70' key={i}>
                 {c.name}
               </Badge>
             ))}

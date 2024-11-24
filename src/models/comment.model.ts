@@ -19,7 +19,8 @@ export const commentSchema = z.object({
   user: userSchema.pick({ id: true, name: true, avatarUrl: true }),
 });
 
-export type TComment = z.infer<typeof commentSchema> & { _count?: { replies: number } };
+export type TComment = z.infer<typeof commentSchema> & { likes?: number;
+  dislikes?: number; };
 
 export const createCommentSchema = commentSchema.pick({
   content: true,

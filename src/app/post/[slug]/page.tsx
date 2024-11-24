@@ -12,6 +12,38 @@ import Rating from './components/own-rating';
 import { Ratings } from './components/ratings';
 import CommentSection from './components/comment-section';
 import DynamicContent from '@/components/common/dynamic-content';
+import { Metadata } from 'next';
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { slug: string };
+}): Promise<Metadata> {
+  try {
+    const post = await PostService.getDetailPost({ slug: params.slug });
+
+    return {
+      title: post.title,
+      description: post.content.substring(0, 160).replace(/<[^>]*>/g, ''),
+      openGraph: {
+        title: post.title,
+        description: post.content.substring(0, 160).replace(/<[^>]*>/g, ''),
+        images: post.thumbnailUrl ? [post.thumbnailUrl] : [],
+        type: 'article',
+        authors: post.author.name,
+        publishedTime: post.createdAt,
+      },
+      alternates: {
+        canonical: `/post/${post.slug}`,
+      },
+    };
+  } catch {
+    return {
+      title: 'Bài viết không tồn tại',
+      description: 'Không tìm thấy bài viết này',
+    };
+  }
+}
 
 async function PostDetailPage({ params }: { params: { slug: string } }) {
   try {
@@ -27,7 +59,7 @@ async function PostDetailPage({ params }: { params: { slug: string } }) {
           {post.categories.length === 0 && <i>Không xác định</i>}
           {post.categories.map((category, i) => (
             <Link href={'/?category=' + category.id} key={i}>
-              <Badge>{category.name}</Badge>
+              <Badge className='bg-foreground'>{category.name}</Badge>
             </Link>
           ))}
         </div>
@@ -84,7 +116,7 @@ async function PostDetailPage({ params }: { params: { slug: string } }) {
           </div>
         )}
         <div className='mt-6'>
-          <DynamicContent>{post.content}</DynamicContent>
+          <DynamicContent content={post.content} />
         </div>
         <Rating postId={post.id} />
         <CommentSection postId={post.id} />

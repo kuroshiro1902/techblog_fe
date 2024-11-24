@@ -21,12 +21,21 @@ export function parseApiURL(path: string, searchParams?: any) {
   if (searchParams) {
     const urlSearch = [];
     for (const key in searchParams) {
-      if (Array.isArray(searchParams[key])) {
-        for (const value of searchParams[key]) {
-          urlSearch.push(`${encodeURIComponent(key)}=${encodeURIComponent(value)}`);
+      const value = searchParams[key];
+      
+      // Skip if value is null or undefined
+      if (value === null || value === undefined) {
+        continue;
+      }
+
+      if (Array.isArray(value)) {
+        for (const item of value) {
+          if (item !== null && item !== undefined) {
+            urlSearch.push(`${encodeURIComponent(key)}=${encodeURIComponent(item)}`);
+          }
         }
       } else {
-        urlSearch.push(`${encodeURIComponent(key)}=${encodeURIComponent(searchParams[key])}`);
+        urlSearch.push(`${encodeURIComponent(key)}=${encodeURIComponent(value)}`);
       }
     }
     searchQuery = urlSearch.length > 0 ? `?${urlSearch.join('&')}` : '';

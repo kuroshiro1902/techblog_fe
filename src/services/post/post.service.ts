@@ -87,8 +87,13 @@ export const PostService = Object.freeze({
     }
   },
 
-  loadCommentOfPost: async (postId: number) => {
-    const res = await ServerSideAPI.get<TComment[]>(path('/comments'), { postId });
+  loadComments: async (params: {
+    postId?: number;
+    parentCommentId?: number;
+    pageIndex?: number;
+    pageSize?: number;
+  }) => {
+    const res = await ServerSideAPI.get<TFilterResponse<TComment>>(path('/comments'), params);
     const { isSuccess, data, message } = res.data;
     if (isSuccess && data) {
       return data;
@@ -106,4 +111,5 @@ export const PostService = Object.freeze({
       throw new Error(message);
     }
   },
+
 });
