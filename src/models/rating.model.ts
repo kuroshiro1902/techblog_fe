@@ -1,8 +1,11 @@
-import { z } from "zod";
+import { ERatingScore } from '@/constant/rating-score.const';
+import { z } from 'zod';
 
 export const ratingSchema = z.object({
-  score: z.number().int().min(1).max(5).nullable(),
+  score: z.number().int().min(ERatingScore.DISLIKE).max(ERatingScore.LIKE).nullable(),
   updatedAt: z.string().default(''),
-})
+});
 
-export type TRating = Partial<z.infer<typeof ratingSchema>>
+export type TRating = Partial<z.infer<typeof ratingSchema>>;
+
+export type TRatingInfo =  { likes?: number; dislikes?: number };

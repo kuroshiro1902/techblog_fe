@@ -8,13 +8,16 @@ import DynamicContent from '@/components/common/dynamic-content';
 import { useState } from 'react';
 import s from './styles.module.scss';
 import { Button } from '@/components/ui/button';
-import { ThumbsUp, ThumbsDown } from 'lucide-react';
+import { ThumbsUp, ThumbsDown, Pencil } from 'lucide-react';
 import { ReplyForm } from './reply-form';
 import { PostService } from '@/services/post/post.service';
 import { useLoadingStore } from '@/stores/loading.store';
 import { toast } from '@/components/hooks/use-toast';
 import { TFilterResponse } from '@/models/filter-response.model';
 import { usePaginatedComments } from '@/hooks/use-paginated-comments';
+import { CommentReactions } from './comment-reactions';
+import { EditForm } from './edit-form';
+import useAuthStore from '@/stores/auth.store';
 
 const CommentHeader = ({ comment }: { comment: TComment }) => {
   return (
@@ -39,7 +42,13 @@ const CommentHeader = ({ comment }: { comment: TComment }) => {
   );
 };
 
-function SingleComment({ comment, postId }: { comment: TComment; postId: number }) {
+function SingleComment({
+  comment: initialComment,
+  postId,
+}: {
+  comment: TComment;
+  postId: number;
+}) {
   const {
     comments: replies,
     isLoading,
@@ -47,21 +56,44 @@ function SingleComment({ comment, postId }: { comment: TComment; postId: number 
     handleLoadMore,
     addComment,
   } = usePaginatedComments({
-    parentCommentId: comment.id,
+    parentCommentId: initialComment.id,
   });
+  const [comment, setComment] = useState(initialComment);
   const [showReplyForm, setShowReplyForm] = useState(false);
-  const executeWithLoading = useLoadingStore((s) => s.executeWithLoading);
+  const [isEditing, setIsEditing] = useState(false);
+  const user = useAuthStore((s) => s.user);
+  const isOwnComment = user?.id === comment.user.id;
 
   const handleSubmitReply = async (content: string) => {
-    await executeWithLoading(async () => {
-      const response = await PostService.createComment({
-        postId,
-        content,
-        parentCommentId: comment.id,
+    PostService.createComment({
+      postId,
+      content,
+      parentCommentId: comment.id,
+    })
+      .then((response) => {
+        addComment(response);
+        setShowReplyForm(false);
+      })
+      .catch((error) => {});
+  };
+
+  const handleEditSubmit = async (content: string) => {
+    try {
+      const updatedComment = await PostService.updateComment(comment.id, { content });
+      // Chỉ update local state của component này
+      setComment((prevComment) => ({
+        ...prevComment,
+        content: updatedComment.content,
+        updatedAt: updatedComment.updatedAt,
+      }));
+      setIsEditing(false);
+    } catch (error) {
+      toast({
+        title: 'Lỗi',
+        description: 'Không thể cập nhật bình luận',
+        variant: 'destructive',
       });
-      addComment(response);
-      setShowReplyForm(false);
-    });
+    }
   };
 
   return (
@@ -70,52 +102,55 @@ function SingleComment({ comment, postId }: { comment: TComment; postId: number 
       role='comment'
       className='border border-gray-200 p-2 mt-2'
     >
-      <div className='flex items-center gap-2'>
-        <Link
-          title={comment?.user.name}
-          href={`/user/${comment?.user?.id}`}
-          target='_blank'
-          className='pt-1 flex items-center gap-2'
-        >
-          <Image
-            className='w-6 aspect-[1/1] rounded-full'
-            src={comment?.user.avatarUrl ?? defaultAvt}
-            alt={comment?.user.name ?? ''}
-            width={24}
-            height={24}
-            quality={50}
-          />
-          <CommentHeader comment={comment} />
-        </Link>
+      <div className='flex items-center justify-between'>
+        <div className='flex items-center gap-2'>
+          <Link
+            title={comment?.user.name}
+            href={`/user/${comment?.user?.id}`}
+            target='_blank'
+            className='pt-1 flex items-center gap-2'
+          >
+            <Image
+              className='w-6 aspect-[1/1] rounded-full'
+              src={comment?.user.avatarUrl ?? defaultAvt}
+              alt={comment?.user.name ?? ''}
+              width={24}
+              height={24}
+              quality={50}
+            />
+            <CommentHeader comment={comment} />
+          </Link>
+        </div>
+        {isOwnComment && !isEditing && (
+          <Button
+            variant='ghost'
+            size='sm'
+            className='h-8 w-8 p-0'
+            onClick={() => setIsEditing(true)}
+            title='Chỉnh sửa bình luận'
+          >
+            <Pencil style={{ width: 12, height: 12 }} />
+          </Button>
+        )}
       </div>
-      <DynamicContent
-        className='text-sm'
-        style={{ paddingBlock: 4, paddingInline: 0 }}
-        content={comment.content}
-      />
+
+      {isEditing ? (
+        <EditForm
+          comment={comment}
+          onSubmit={handleEditSubmit}
+          onCancel={() => setIsEditing(false)}
+        />
+      ) : (
+        <DynamicContent
+          className='text-sm'
+          style={{ paddingBlock: 4, paddingInline: 0 }}
+          content={comment.content}
+        />
+      )}
 
       {/* Reaction và Reply */}
       <div className={s.commentReaction}>
-        <div data-role='reaction' className='flex items-center gap-2'>
-          <Button variant='outline' title='Thích' className='flex items-center gap-1'>
-            <ThumbsUp style={{ width: 14, height: 14 }} />
-            {(comment.likes ?? 0) > 0 && <span className='text-xs'>{comment.likes}</span>}
-          </Button>
-          <Button variant='outline' title='Không thích' className='flex items-center gap-1'>
-            <ThumbsDown style={{ width: 14, height: 14 }} />
-            {(comment.dislikes ?? 0) > 0 && <span className='text-xs'>{comment.dislikes}</span>}
-          </Button>
-          <Button
-            className='!leading-[1.35]'
-            variant='ghost'
-            onClick={() => {
-              setShowReplyForm(true);
-              handleLoadMore();
-            }}
-          >
-            Trả lời
-          </Button>
-        </div>
+        <CommentReactions comment={comment} onReplyClick={() => setShowReplyForm(true)} />
       </div>
 
       {/* Reply Form */}

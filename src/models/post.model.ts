@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { userSchema } from './user.model';
 import { categorySchema } from './category.model';
-import { TRating } from './rating.model';
+import { TRating, TRatingInfo } from './rating.model';
 
 export const postSchema = z.object({
   id: z
@@ -29,7 +29,7 @@ export const postSchema = z.object({
   updatedAt: z.string().default(''),
 });
 
-export type TPost = z.infer<typeof postSchema>  & { rating?: TRating };
+export type TPost = z.infer<typeof postSchema>  & { rating?: TRatingInfo };
 
 export const createPostSchema = postSchema.pick({
   title: true,

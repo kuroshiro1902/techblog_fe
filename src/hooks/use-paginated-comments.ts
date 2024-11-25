@@ -12,7 +12,7 @@ interface UseCommentsParams {
 export function usePaginatedComments({ 
   postId, 
   parentCommentId, 
-  pageSize = 3 
+  pageSize = 5 
 }: UseCommentsParams) {
   const [comments, setComments] = useState<TFilterResponse<TComment>>({
     data: [],

@@ -1,6 +1,8 @@
 import { z } from 'zod';
 import { userSchema } from './user.model';
 import { postSchema } from './post.model';
+import { TRatingInfo } from './rating.model';
+import { ERatingScore } from '@/constant/rating-score.const';
 
 export const commentSchema = z.object({
   id: z
@@ -19,8 +21,7 @@ export const commentSchema = z.object({
   user: userSchema.pick({ id: true, name: true, avatarUrl: true }),
 });
 
-export type TComment = z.infer<typeof commentSchema> & { likes?: number;
-  dislikes?: number; };
+export type TComment = z.infer<typeof commentSchema>  & {rating: TRatingInfo} & {ownRating?: ERatingScore};
 
 export const createCommentSchema = commentSchema.pick({
   content: true,

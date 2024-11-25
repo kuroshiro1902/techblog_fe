@@ -4,7 +4,7 @@ import { TFilterResponse } from '@/models/filter-response.model';
 import { createPostSchema, TPost, TPostFilter } from '@/models/post.model';
 import { z } from 'zod';
 import { TRating } from '@/models/rating.model';
-import { TComment, TCreateComment } from '@/models/comment.model';
+import { TComment, TCreateComment, updateCommentSchema } from '@/models/comment.model';
 
 const path = apiPath('/posts');
 
@@ -64,7 +64,7 @@ export const PostService = Object.freeze({
   //   }
   // }
   getOwnRatingOfPost: async (postId: number) => {
-    const res = await API.get<TRating>(path('/rating/'+postId));
+    const res = await API.get<TRating>(path('/rating/' + postId));
     const { isSuccess, data, message } = res.data;
 
     if (isSuccess && data) {
@@ -93,7 +93,7 @@ export const PostService = Object.freeze({
     pageIndex?: number;
     pageSize?: number;
   }) => {
-    const res = await ServerSideAPI.get<TFilterResponse<TComment>>(path('/comments'), params);
+    const res = await API.get<TFilterResponse<TComment>>(path('/comments'), params);
     const { isSuccess, data, message } = res.data;
     if (isSuccess && data) {
       return data;
@@ -112,4 +112,23 @@ export const PostService = Object.freeze({
     }
   },
 
+  ratingComment: async (commentId: number, score: number) => {
+    const res = await API.post<TComment>(path('/comment/rating'), { commentId, score });
+    const { isSuccess, data, message } = res.data;
+    if (isSuccess && data) {
+      return data;
+    } else {
+      throw new Error(message);
+    }
+  },
+
+  updateComment: async (commentId: number, data: z.input<typeof updateCommentSchema>) => {
+    const res = await API.put<TComment>(path('/comment/update'), { commentId, data });
+    const { isSuccess, data: comment, message } = res.data;
+    if (isSuccess && comment) {
+      return comment;
+    } else {
+      throw new Error(message);
+    }
+  },
 });

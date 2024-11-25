@@ -9,10 +9,11 @@ import dayjs from 'dayjs';
 import { Badge } from '@/components/ui/badge';
 import NavigateToUpdatePage from './components/navigateToUpdatePage';
 import Rating from './components/own-rating';
-import { Ratings } from './components/ratings';
 import CommentSection from './components/comment-section';
 import DynamicContent from '@/components/common/dynamic-content';
 import { Metadata } from 'next';
+import ScrollToTop from '@/components/common/scroll-to-top';
+import { ThumbsDownIcon, ThumbsUpIcon } from 'lucide-react';
 
 export async function generateMetadata({
   params,
@@ -53,7 +54,22 @@ async function PostDetailPage({ params }: { params: { slug: string } }) {
       <main className='max-w-screen-lg m-auto flex flex-col justify-between lg:p-8 p-4'>
         <NavigateToUpdatePage postSlug={post.slug} authorId={post.author.id} />
         <h1 className='mb-2 text-linear-primary'>{post?.title}</h1>
-        <Ratings score={post.rating?.score ?? 0} />
+        <div className='flex gap-4 flex-wrap items-center mb-4'>
+          <Badge
+            title={`Số lượt thích: ${post.rating?.likes ?? 0}`}
+            variant='secondary'
+            className='py-1'
+          >
+            <ThumbsUpIcon className='mr-2' size={16} /> {post.rating?.likes ?? 0}
+          </Badge>
+          <Badge
+            title={`Số lượt không thích: ${post.rating?.dislikes ?? 0}`}
+            variant='destructive'
+            className='py-1'
+          >
+            <ThumbsDownIcon className='mr-2' size={16} /> {post.rating?.dislikes ?? 0}
+          </Badge>
+        </div>
         <div className='inline-flex items-center gap-4 text-sm'>
           <span>Thể loại: </span>
           {post.categories.length === 0 && <i>Không xác định</i>}
@@ -120,6 +136,7 @@ async function PostDetailPage({ params }: { params: { slug: string } }) {
         </div>
         <Rating postId={post.id} />
         <CommentSection postId={post.id} />
+        <ScrollToTop />
       </main>
     );
   } catch (error: any) {
