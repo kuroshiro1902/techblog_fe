@@ -38,10 +38,13 @@ export function usePaginatedComments({
         pageSize,
       });
 
-      setComments(prev => ({
-        data: pageIndex === 0 ? response.data : [...prev.data, ...response.data],
-        pageInfo: response.pageInfo,
-      }));
+      setComments(prev => {
+        return {
+
+          data: pageIndex === 0 ? response.data : [...prev.data, ...response.data],
+          pageInfo: response.pageInfo,
+        }
+      });
     } catch (error) {
       console.error('Failed to load comments:', error);
     } finally {
@@ -56,6 +59,13 @@ export function usePaginatedComments({
     }));
   }, []);
 
+  const removeComment = useCallback((commentId: number) => {
+    setComments((prev) => ({
+      data: prev.data.filter((comment) => comment.id !== commentId),
+      pageInfo: { ...prev.pageInfo },
+    }));
+  }, []);
+
   const handleLoadMore = useCallback(() => {
     if (!isLoading && comments.pageInfo.hasNextPage) {
       const nextPageIndex = comments.pageInfo.pageIndex + 1;
@@ -66,8 +76,10 @@ export function usePaginatedComments({
   return {
     comments,
     isLoading,
+    setComments,
     loadComments: fetchComments,
     handleLoadMore,
     addComment,
+    removeComment
   };
 }

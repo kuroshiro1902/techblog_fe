@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import defaultAvt from '@/assets/default_avt.png';
 import DynamicContent from '@/components/common/dynamic-content';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import s from './styles.module.scss';
 import { Button } from '@/components/ui/button';
 import { ThumbsUp, ThumbsDown, Pencil } from 'lucide-react';
@@ -18,6 +18,7 @@ import { usePaginatedComments } from '@/hooks/use-paginated-comments';
 import { CommentReactions } from './comment-reactions';
 import { EditForm } from './edit-form';
 import useAuthStore from '@/stores/auth.store';
+import { DeleteComment } from './delete-comment';
 
 const CommentHeader = ({ comment }: { comment: TComment }) => {
   return (
@@ -45,9 +46,11 @@ const CommentHeader = ({ comment }: { comment: TComment }) => {
 function SingleComment({
   comment: initialComment,
   postId,
+  onDelete,
 }: {
   comment: TComment;
   postId: number;
+  onDelete: (commentId: number) => Promise<void>;
 }) {
   const {
     comments: replies,
@@ -55,6 +58,7 @@ function SingleComment({
     loadComments,
     handleLoadMore,
     addComment,
+    removeComment,
   } = usePaginatedComments({
     parentCommentId: initialComment.id,
   });
@@ -64,37 +68,50 @@ function SingleComment({
   const user = useAuthStore((s) => s.user);
   const isOwnComment = user?.id === comment.user.id;
 
-  const handleSubmitReply = async (content: string) => {
-    PostService.createComment({
-      postId,
-      content,
-      parentCommentId: comment.id,
-    })
-      .then((response) => {
-        addComment(response);
-        setShowReplyForm(false);
+  const handleSubmitReply = useCallback(
+    async (content: string) => {
+      PostService.createComment({
+        postId,
+        content,
+        parentCommentId: comment.id,
       })
-      .catch((error) => {});
-  };
+        .then((response) => {
+          addComment(response);
+          setShowReplyForm(false);
+        })
+        .catch((error) => {});
+    },
+    [addComment, comment.id, postId]
+  );
 
-  const handleEditSubmit = async (content: string) => {
-    try {
-      const updatedComment = await PostService.updateComment(comment.id, { content });
-      // Chỉ update local state của component này
-      setComment((prevComment) => ({
-        ...prevComment,
-        content: updatedComment.content,
-        updatedAt: updatedComment.updatedAt,
-      }));
-      setIsEditing(false);
-    } catch (error) {
-      toast({
-        title: 'Lỗi',
-        description: 'Không thể cập nhật bình luận',
-        variant: 'destructive',
-      });
-    }
-  };
+  const handleEditSubmit = useCallback(
+    async (content: string) => {
+      try {
+        const updatedComment = await PostService.updateComment(comment.id, { content });
+        // Chỉ update local state của component này
+        setComment((prevComment) => ({
+          ...prevComment,
+          content: updatedComment.content,
+          updatedAt: updatedComment.updatedAt,
+        }));
+        setIsEditing(false);
+      } catch (error) {
+        toast({
+          title: 'Lỗi',
+          description: 'Không thể cập nhật bình luận',
+          variant: 'destructive',
+        });
+      }
+    },
+    [comment.id]
+  );
+
+  const handleDeleteComment = useCallback(async (commentId: number) => {
+    await PostService.deleteComment(commentId).then(() => {
+      toast({ title: 'Xóa bình luận thành công.', variant: 'success' });
+      removeComment(commentId);
+    });
+  }, []);
 
   return (
     <div
@@ -122,15 +139,18 @@ function SingleComment({
           </Link>
         </div>
         {isOwnComment && !isEditing && (
-          <Button
-            variant='ghost'
-            size='sm'
-            className='h-8 w-8 p-0'
-            onClick={() => setIsEditing(true)}
-            title='Chỉnh sửa bình luận'
-          >
-            <Pencil style={{ width: 12, height: 12 }} />
-          </Button>
+          <div>
+            <Button
+              variant='ghost'
+              size='sm'
+              className='h-8 w-8 p-0'
+              onClick={() => setIsEditing(true)}
+              title='Chỉnh sửa bình luận'
+            >
+              <Pencil style={{ width: 12, height: 12 }} />
+            </Button>
+            <DeleteComment commentId={comment.id} onDelete={onDelete} />
+          </div>
         )}
       </div>
 
@@ -176,7 +196,12 @@ function SingleComment({
       {replies.data.length > 0 && (
         <div className='pl-4 mt-2 border-l-2 border-gray-200'>
           {replies.data.map((reply) => (
-            <SingleComment key={reply.id} comment={reply} postId={postId} />
+            <SingleComment
+              key={reply.id}
+              comment={reply}
+              postId={postId}
+              onDelete={handleDeleteComment}
+            />
           ))}
         </div>
       )}

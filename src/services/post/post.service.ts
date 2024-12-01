@@ -131,4 +131,14 @@ export const PostService = Object.freeze({
       throw new Error(message);
     }
   },
+
+  deleteComment: async (commentId: number) => {
+    const res = await API.delete<TComment>(path(`/comments/`+commentId));
+    const { isSuccess, data: comment, message } = res.data;
+    if (isSuccess && comment) {
+      return comment;
+    } else {
+      throw new Error(message);
+    }
+  },
 });
