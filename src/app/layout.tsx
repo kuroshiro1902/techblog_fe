@@ -32,7 +32,7 @@ export default function RootLayout({
         <UserIdentify />
         <Toaster />
         <Header />
-        <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
+        <Suspense fallback={<LoadingOverlay width={90} height={90} />}>{children}</Suspense>
       </body>
     </html>
   );

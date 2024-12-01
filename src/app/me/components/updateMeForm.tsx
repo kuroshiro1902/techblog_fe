@@ -74,7 +74,7 @@ function UpdateMeForm({ user, onClose = () => {} }: props) {
   return (
     <>
       <Overlay onClose={onClose}>
-        <h2 className='text-2xl font-bold mb-6'>Chỉnh sửa thông tin</h2>
+        <h2 className='text-current text-2xl font-bold mb-6'>Chỉnh sửa thông tin</h2>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
             <FormInput

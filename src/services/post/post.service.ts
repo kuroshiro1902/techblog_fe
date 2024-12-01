@@ -45,11 +45,15 @@ export const PostService = Object.freeze({
       throw new Error(message);
     }
   },
-  getOwnPosts: async () => {
-    const res = await API.get<TFilterResponse<TPost>>(path('/me'));
+  getOwnPosts: async (params: {
+    pageIndex?: number;
+    pageSize?: number;
+    isPublished?: boolean;
+  }) => {
+    const res = await API.get<TFilterResponse<TPost>>(path('/me'), params);
     const { isSuccess, data, message } = res.data;
-    if (isSuccess && data?.data) {
-      return data.data;
+    if (isSuccess && data) {
+      return data;
     } else {
       throw new Error(message);
     }

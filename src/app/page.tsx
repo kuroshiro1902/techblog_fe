@@ -50,7 +50,10 @@ export default async function HomePage({
         </ul>
       </div>
       <div className='mt-4 flex justify-center'>
-        <Pagination totalPage={postData.pageInfo.totalPage} />
+        <Pagination
+          totalPage={postData.pageInfo.totalPage}
+          currentPage={postData.pageInfo.pageIndex}
+        />
       </div>
     </main>
   );

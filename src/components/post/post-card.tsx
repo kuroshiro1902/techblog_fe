@@ -13,7 +13,7 @@ import { TPost } from '@/models/post.model';
 import Image from 'next/image';
 import { Button } from '../ui/button';
 import { formatDate } from 'date-fns';
-import { EyeIcon, StarIcon } from 'lucide-react';
+import { EyeIcon, StarIcon, ThumbsDownIcon, ThumbsUpIcon } from 'lucide-react';
 import { Badge } from '../ui/badge';
 
 export interface PostCardProps {
@@ -79,21 +79,25 @@ function PostCard({ post }: PostCardProps) {
               />
             </LinkPost>
           </span>
-          <span className='flex gap-3 flex-wrap'>
+          <span className='flex gap-3 flex-wrap items-center'>
             <small
               className='inline-flex gap-1 items-center'
               title={(post?.views || 0) + ' lượt xem'}
             >
               {post?.views} <EyeIcon className='inline' size={14} />
             </small>
-            {post?.rating?.score && (
-              <small
-                className='inline-flex gap-1 items-center'
-                title={'Điểm đánh giá trung bình: ' + post.rating.score}
-              >
-                {post.rating.score} <StarIcon className='inline' size={12} />
-              </small>
-            )}
+            <small
+              className='inline-flex gap-1 items-center'
+              title={(post?.rating?.likes || 0) + ' lượt thích'}
+            >
+              {post?.rating?.likes || 0} <ThumbsUpIcon className='inline' size={12} />
+            </small>
+            <small
+              className='inline-flex gap-1 items-center'
+              title={(post?.rating?.dislikes || 0) + ' lượt không thích'}
+            >
+              {post?.rating?.dislikes || 0} <ThumbsDownIcon className='inline' size={12} />
+            </small>
           </span>
         </CardDescription>
         <LinkPost post={post}>
