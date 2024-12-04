@@ -22,7 +22,6 @@ export type PaginationConfig = {
 
 export type PaginatedData<T> = {
   data: T[];
-  total: number;
   currentPage: number;
   pageSize: number;
   totalPages: number;
@@ -92,6 +91,7 @@ function PaginationContainer<T>({
         setIsLoading(true);
         setError(null);
         const data = await fetchData(page, pageSize);
+        console.log({ page, data });
         setPaginatedData(data);
         onDataLoaded?.(data);
       } catch (err) {
@@ -151,6 +151,7 @@ function PaginationContainer<T>({
       <div className={`mt-4 flex ${paginationClass[paginationPosition]}`}>
         <Pagination
           totalPage={paginatedData.totalPages}
+          currentPage={paginatedData.currentPage}
           paramName={paramName}
           preserveQuery={preserveQuery}
           onPageChange={handlePageChange}

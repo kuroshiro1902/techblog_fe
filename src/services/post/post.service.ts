@@ -5,6 +5,7 @@ import { createPostSchema, TPost, TPostFilter } from '@/models/post.model';
 import { z } from 'zod';
 import { TRating } from '@/models/rating.model';
 import { TComment, TCreateComment, updateCommentSchema } from '@/models/comment.model';
+import { TPostRevision } from '@/models/post-revision.model';
 
 const path = apiPath('/posts');
 
@@ -18,8 +19,8 @@ export const PostService = Object.freeze({
       throw new Error(message);
     }
   },
-  getDetailPost: async (filter: { slug: string }) => {
-    const res = await ServerSideAPI.get<TPost>(path('/detail'), filter);
+  getDetailPost: async (filter: { slug: string }, withCredentials = false) => {
+    const res = await (withCredentials ? API : ServerSideAPI).get<TPost>(path('/detail'), filter);
     const { isSuccess, data, message } = res.data;
     if (isSuccess && data) {
       return data;
@@ -51,6 +52,24 @@ export const PostService = Object.freeze({
     isPublished?: boolean;
   }) => {
     const res = await API.get<TFilterResponse<TPost>>(path('/me'), params);
+    const { isSuccess, data, message } = res.data;
+    if (isSuccess && data) {
+      return data;
+    } else {
+      throw new Error(message);
+    }
+  },
+  getPostRevisions: async (params: { postId: number, pageIndex?: number, pageSize?: number }) => {
+    const res = await API.get<TFilterResponse<TPostRevision>>(path('/revisions'), params);
+    const { isSuccess, data, message } = res.data;
+    if (isSuccess && data) {
+      return data;
+    } else {
+      throw new Error(message);
+    }
+  },
+  restorePostRevisions: async (body: { revisionId: number } ) => {
+    const res = await API.post<TPost>(path('/restore-revision'), body);
     const { isSuccess, data, message } = res.data;
     if (isSuccess && data) {
       return data;

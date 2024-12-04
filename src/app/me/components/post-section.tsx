@@ -22,7 +22,6 @@ export default function PostSection({ title, isPublished }: PostSectionProps) {
 
       return {
         data: response.data,
-        total: response.pageInfo.totalPage * pageSize,
         currentPage: response.pageInfo.pageIndex,
         pageSize: response.pageInfo.pageSize,
         totalPages: response.pageInfo.totalPage,

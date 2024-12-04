@@ -72,7 +72,7 @@ function SearchPostForm({
   // Fetch categories when the component mounts
   useEffect(() => {
     fetchCategories();
-  }, [fetchCategories]);
+  }, []);
 
   // Debounced form submission
   const handleSubmit = debounce(() => {
@@ -133,7 +133,7 @@ function SearchPostForm({
                 label: name,
                 value: '' + id,
               }))}
-              onValueChange={(categoryIds) =>
+              onChange={(categoryIds) =>
                 form.setValue(
                   'categoryId',
                   categoryIds.map((cid) => +cid).filter((cid) => !isNaN(cid))

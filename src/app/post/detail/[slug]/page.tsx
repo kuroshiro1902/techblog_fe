@@ -13,7 +13,7 @@ import CommentSection from './components/comment-section';
 import DynamicContent from '@/components/common/dynamic-content';
 import { Metadata } from 'next';
 import ScrollToTop from '@/components/common/scroll-to-top';
-import { ThumbsDownIcon, ThumbsUpIcon } from 'lucide-react';
+import { EyeIcon, ThumbsDownIcon, ThumbsUpIcon } from 'lucide-react';
 
 export async function generateMetadata({
   params,
@@ -35,7 +35,7 @@ export async function generateMetadata({
         publishedTime: post.createdAt,
       },
       alternates: {
-        canonical: `/post/${post.slug}`,
+        canonical: `/post/detail/${post.slug}`,
       },
     };
   } catch {
@@ -55,6 +55,9 @@ async function PostDetailPage({ params }: { params: { slug: string } }) {
         <NavigateToUpdatePage postSlug={post.slug} authorId={post.author.id} />
         <h1 className='mb-2 text-linear-primary'>{post?.title}</h1>
         <div className='flex gap-4 flex-wrap items-center mb-4'>
+          <span className='text-sm inline-flex gap-1 items-center'>
+            <EyeIcon size={18} /> {post.views ?? 0}
+          </span>
           <Badge
             title={`Số lượt thích: ${post.rating?.likes ?? 0}`}
             variant='secondary'

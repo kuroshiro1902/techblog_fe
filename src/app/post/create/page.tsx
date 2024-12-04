@@ -27,6 +27,7 @@ import ThumbnailImg from '@/components/post/thumbnail-image';
 import { MultiSelect } from '@/components/ui/multi-select';
 import { TCategory } from '@/models/category.model';
 import { CategoryService } from '@/services/category/category.service';
+import { Input } from '@/components/ui/input';
 
 const SelectThumbnailBtn = ({ onSuccess }: { onSuccess: (url: string) => void }) => {
   return (
@@ -98,7 +99,9 @@ function PostCreatePage() {
           const createdPost = await PostService.createPost(post);
           toast({ variant: 'success', title: 'Tạo bài viết thành công.' });
           setTimeout(() => {
-            router.replace(`/post/${createdPost.slug}`);
+            router.replace(
+              `/post/${createdPost.isPublished ? 'detail' : 'preview'}/${createdPost.slug}`
+            );
           }, 100);
         })();
       },
@@ -221,9 +224,7 @@ function PostCreatePage() {
                     <FormControl>
                       <MultiSelect
                         options={categories.map((c) => ({ label: c.name, value: '' + c.id }))}
-                        onValueChange={(values) =>
-                          field.onChange(values.map((v) => ({ id: +v })))
-                        }
+                        onChange={(values) => field.onChange(values.map((v) => ({ id: +v })))}
                         placeholder='Chọn thể loại'
                         value={field.value?.map(({ id }) => `${id}`)}
                         maxCount={3}
@@ -234,17 +235,31 @@ function PostCreatePage() {
                 )}
               />
 
-              <FormInput
-                type='checkbox'
-                control={form.control}
+              <Controller
                 name='isPublished'
-                label='Xuất bản'
-                className='h-[20px] w-[20px] inline ml-2'
-                defaultChecked
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <div className='flex items-center'>
+                        <Input
+                          type='checkbox'
+                          checked={field.value}
+                          onChange={field.onChange}
+                          className='h-[20px] w-[20px]'
+                        />
+                        <FormLabel className='ml-2'>
+                          {field.value ? 'Xuất bản ngay' : 'Lưu nháp'}
+                        </FormLabel>
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
 
               <Button type='submit' className='h-12 px-5' onClick={onSubmit}>
-                Đăng bài
+                {form.getValues('isPublished') ? 'Đăng bài' : 'Lưu nháp'}
               </Button>
             </form>
           </Form>

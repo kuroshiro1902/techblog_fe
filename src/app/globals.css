@@ -175,8 +175,8 @@ input[type='number'] {
   -moz-appearance: textfield;
 }
 
-.ql-editor img {
-  display: initial !important;
+.ql-editor.dynamic-content img {
+  display: inline-block !important;
 }
 
 .ql-editor a {
@@ -185,4 +185,13 @@ input[type='number'] {
 
 .ql-editor a:hover {
   text-decoration: underline;
+}
+
+.ql-editor h3,
+.ql-editor h2,
+.ql-editor h1,
+.ql-editor h4,
+.ql-editor h5,
+.ql-editor h6 {
+  color: currentColor;
 }

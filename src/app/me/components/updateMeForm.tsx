@@ -31,7 +31,6 @@ function UpdateMeForm({ user, onClose = () => {} }: props) {
   const executeWithLoading = useLoadingStore((s) => s.executeWithLoading);
   const [submitMessage, setSubmitMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const router = useRouter();
   const form = useForm<z.infer<typeof meUpdateSchema>>({
     resolver: zodResolver(meUpdateSchema),
     defaultValues: {
