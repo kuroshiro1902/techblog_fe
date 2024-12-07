@@ -8,6 +8,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
+import hljs from 'highlight.js';
 import { createPostSchema, TPost } from '@/models/post.model';
 import ProtectedRoute from '@/routes/ProtectedRoute';
 import { useLoadingStore } from '@/stores/loading.store';
@@ -31,6 +32,7 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { TPostRevision } from '@/models/post-revision.model';
 import RevisionHistory from './components/revision-history';
+import 'highlight.js/styles/github.min.css';
 
 const SelectThumbnailBtn = ({ onSuccess }: { onSuccess: (url: string) => void }) => {
   return (
@@ -249,12 +251,14 @@ function PostUpdatePage({ params }: { params: { slug: string } }) {
                             container: [
                               [{ header: [1, 2, 3, false] }],
                               ['bold', 'italic', 'underline', 'strike'],
+                              ['code-block'],
                               [{ list: 'ordered' }, { list: 'bullet' }],
                               ['link', 'image'],
                               [{ align: [] }],
                               ['clean'],
                             ],
                           },
+                          syntax: { hljs },
                         }}
                         formats={[
                           'header',
@@ -262,6 +266,7 @@ function PostUpdatePage({ params }: { params: { slug: string } }) {
                           'italic',
                           'underline',
                           'strike',
+                          'code-block',
                           'list',
                           'link',
                           'image',

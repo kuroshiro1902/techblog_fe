@@ -14,6 +14,7 @@ import DynamicContent from '@/components/common/dynamic-content';
 import { Metadata } from 'next';
 import ScrollToTop from '@/components/common/scroll-to-top';
 import { EyeIcon, ThumbsDownIcon, ThumbsUpIcon } from 'lucide-react';
+import 'highlight.js/styles/github.min.css';
 
 export async function generateMetadata({
   params,

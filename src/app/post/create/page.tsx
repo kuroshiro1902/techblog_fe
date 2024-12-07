@@ -1,4 +1,5 @@
 'use client';
+import hljs from 'highlight.js';
 import Editor from '@/components/editor/editor';
 import FormInput from '@/components/form/formInput';
 import {
@@ -28,6 +29,7 @@ import { MultiSelect } from '@/components/ui/multi-select';
 import { TCategory } from '@/models/category.model';
 import { CategoryService } from '@/services/category/category.service';
 import { Input } from '@/components/ui/input';
+import 'highlight.js/styles/github.min.css';
 
 const SelectThumbnailBtn = ({ onSuccess }: { onSuccess: (url: string) => void }) => {
   return (
@@ -190,12 +192,14 @@ function PostCreatePage() {
                             container: [
                               [{ header: [1, 2, 3, false] }],
                               ['bold', 'italic', 'underline', 'strike'],
+                              ['code-block'],
                               [{ list: 'ordered' }, { list: 'bullet' }],
                               ['link', 'image'],
                               [{ align: [] }],
                               ['clean'],
                             ],
                           },
+                          syntax: { hljs },
                         }}
                         formats={[
                           'header',
@@ -203,6 +207,7 @@ function PostCreatePage() {
                           'italic',
                           'underline',
                           'strike',
+                          'code-block',
                           'list',
                           'link',
                           'image',

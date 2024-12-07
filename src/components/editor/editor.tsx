@@ -1,10 +1,13 @@
 'use client';
+import hljs from 'highlight.js';
 import dynamic from 'next/dynamic';
-import { memo, RefObject, useRef } from 'react';
+import { memo, RefObject, useEffect, useRef } from 'react';
 import 'react-quill-new/dist/quill.snow.css';
 import './style.scss';
 import ReactQuill from 'react-quill-new';
 import { CldUploadWidget } from 'next-cloudinary';
+import 'highlight.js/styles/github.min.css';
+import javascript from 'highlight.js/lib/languages/javascript';
 
 const QuillEditor = dynamic(
   async () => {
@@ -39,6 +42,10 @@ const Editor = memo(
     className = '',
     ...props
   }: EditorProps) => {
+    useEffect(() => {
+      hljs.registerLanguage('javascript', javascript);
+      hljs.highlightAll(); // Force highlight after registering
+    }, []);
     const ref = useRef<ReactQuill>(null);
     const uploadImgButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -55,9 +62,10 @@ const Editor = memo(
     const defaultModules = {
       toolbar: {
         container: [
-          ['bold', 'italic', 'underline'],
-          ['link', ...(enableImage ? ['image'] : [])],
-          ['clean'],
+          ['bold', 'italic', 'underline'], // Inline styles
+          ['code-block'], // Add code block button
+          ['link', ...(enableImage ? ['image'] : [])], // Add image button if enabled
+          ['clean'], // Remove formatting button
         ],
         handlers: enableImage
           ? {
@@ -70,12 +78,14 @@ const Editor = memo(
       clipboard: {
         matchVisual: false,
       },
+      syntax: { hljs },
     };
 
     const defaultFormats = [
       'bold',
       'italic',
       'underline',
+      'code-block', // Add code block format
       'link',
       ...(enableImage ? ['image'] : []),
     ];

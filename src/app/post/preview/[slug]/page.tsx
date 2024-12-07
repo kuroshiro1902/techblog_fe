@@ -14,6 +14,7 @@ import { PostService } from '@/services/post/post.service';
 import { getApiErrorMessage } from '@/utils/getApiErrorMessage.util';
 import useAuthStore from '@/stores/auth.store';
 import ProtectedRoute from '@/routes/ProtectedRoute';
+import 'highlight.js/styles/github.min.css';
 
 export default function PostPreviewPage({ params }: { params: { slug: string } }) {
   const [post, setPost] = useState<TPost | null>(null);
