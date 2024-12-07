@@ -7,10 +7,11 @@ import { PostService } from '@/services/post/post.service';
 import { useCallback } from 'react';
 import { TOwnRating } from '@/services/post/models/own-rating.model';
 import { formatDate } from 'date-fns';
+import { TOwnComment } from '@/services/post/models/own-comment.model';
 
-export default function RatingHistory() {
+export default function CommentHistory() {
   const fetchPosts = useCallback(async (pageIndex: number, pageSize: number) => {
-    const response = await PostService.getOwnRatings({
+    const response = await PostService.getOwnComments({
       pageIndex,
       pageSize,
     });
@@ -23,25 +24,31 @@ export default function RatingHistory() {
     };
   }, []);
 
-  const renderHistory = (rating: TOwnRating) => {
-    const like = (rating?.score ?? 0) > 0;
-    if (!rating.post) {
-      return <p key={rating.id}>Bài viết này đã bị xóa.</p>;
+  const renderHistory = (comment: TOwnComment) => {
+    if (!comment.post) {
+      return <p key={comment.id}>Bài viết này đã bị xóa.</p>;
     }
     return (
-      <p key={rating.id}>
+      <p key={comment.id}>
         <a
           target='_blank'
-          href={'/post/detail/' + rating.post?.slug}
-          className='hover:underline'
+          href={'/post/detail/' + comment.post?.slug}
+          className='hover:underline flex gap-2 items-center'
         >
-          {rating.updatedAt && (
-            <time className='text-xs mr-2'>
-              <i>{formatDate(rating.updatedAt, 'HH:mm dd/MM/yyyy')}</i>
+          {comment.updatedAt && (
+            <time className='text-xs'>
+              <i>{formatDate(comment.updatedAt, 'HH:mm dd/MM/yyyy')}</i>
             </time>
           )}
-          <span>
-            Bạn đã {like ? 'thích' : 'thông thích'} <b>{rating.post?.title}</b>.
+          <span className='flex'>
+            Bạn đã bình luận &quot;
+            <b className='text-ellipsis line-clamp-1'>
+              {
+                new DOMParser().parseFromString(comment.content ?? '', 'text/html').body
+                  .textContent
+              }
+            </b>
+            &quot;.
           </span>
         </a>
       </p>
@@ -52,9 +59,9 @@ export default function RatingHistory() {
 
   return (
     <section className='mt-8'>
-      <h2 className='text-current text-2xl font-bold mb-2'>Lịch sử tương tác</h2>
+      <h2 className='text-current text-2xl font-bold mb-2'>Lịch sử bình luận</h2>
       <hr className='mb-2' />
-      <PaginationContainer<TOwnRating>
+      <PaginationContainer<TOwnComment>
         fetchData={fetchPosts}
         renderItem={renderHistory}
         renderContainer={renderContainer}
@@ -66,9 +73,7 @@ export default function RatingHistory() {
           preserveQuery: false, // Không giữ query params
         }}
         emptyComponent={
-          <div className='text-center py-8 text-gray-500'>
-            Bạn chưa tương tác với bài viết nào.
-          </div>
+          <div className='text-center py-8 text-gray-500'>Bạn chưa có bình luận nào.</div>
         }
       />
     </section>

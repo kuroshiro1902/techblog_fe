@@ -7,6 +7,7 @@ import { TRating } from '@/models/rating.model';
 import { TComment, TCreateComment, updateCommentSchema } from '@/models/comment.model';
 import { TPostRevision } from '@/models/post-revision.model';
 import { TOwnRating } from './models/own-rating.model';
+import { TOwnComment } from './models/own-comment.model';
 
 const path = apiPath('/posts');
 
@@ -79,7 +80,16 @@ export const PostService = Object.freeze({
     }
   },
   getOwnRatings: async (params: {pageIndex?: number, pageSize?: number}) => {
-    const res = await API.get<TFilterResponse<TOwnRating>>(path('/ratings'), params);
+    const res = await API.get<TFilterResponse<TOwnRating>>(path('/own-ratings'), params);
+    const { isSuccess, data, message } = res.data;
+    if (isSuccess && data) {
+      return data;
+    } else {
+      throw new Error(message);
+    }
+  },
+  getOwnComments: async (params: {pageIndex?: number, pageSize?: number}) => {
+    const res = await API.get<TFilterResponse<TOwnComment>>(path('/own-comments'), params);
     const { isSuccess, data, message } = res.data;
     if (isSuccess && data) {
       return data;

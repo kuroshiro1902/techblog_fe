@@ -15,6 +15,7 @@ import { TPost } from '@/models/post.model';
 import PostSection from './components/post-section';
 import UpdatePasswordForm from './components/updatePasswordForm';
 import RatingHistory from './components/ratings-history';
+import CommentHistory from './components/comments-history';
 
 function MePage() {
   const [isOpenForm, setIsOpenForm] = useState(false);
@@ -113,6 +114,7 @@ function MePage() {
       <PostSection title='Bài viết đã xuất bản' isPublished={true} />
       <PostSection title='Bài viết chưa xuất bản' isPublished={false} />
       <RatingHistory />
+      <CommentHistory />
     </main>
   );
 }
