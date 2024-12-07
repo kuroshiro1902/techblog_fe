@@ -53,7 +53,7 @@ export default function PostSection({ title, isPublished }: PostSectionProps) {
         config={{
           pageSize: 8,
           initialPage: 1,
-          scrollToTop: true,
+          scrollToTop: false,
           paramName: undefined, // Không sử dụng URL params
           preserveQuery: false, // Không giữ query params
         }}

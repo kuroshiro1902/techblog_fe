@@ -6,6 +6,7 @@ import { z } from 'zod';
 import { TRating } from '@/models/rating.model';
 import { TComment, TCreateComment, updateCommentSchema } from '@/models/comment.model';
 import { TPostRevision } from '@/models/post-revision.model';
+import { TOwnRating } from './models/own-rating.model';
 
 const path = apiPath('/posts');
 
@@ -70,6 +71,15 @@ export const PostService = Object.freeze({
   },
   restorePostRevisions: async (body: { revisionId: number } ) => {
     const res = await API.post<TPost>(path('/restore-revision'), body);
+    const { isSuccess, data, message } = res.data;
+    if (isSuccess && data) {
+      return data;
+    } else {
+      throw new Error(message);
+    }
+  },
+  getOwnRatings: async (params: {pageIndex?: number, pageSize?: number}) => {
+    const res = await API.get<TFilterResponse<TOwnRating>>(path('/ratings'), params);
     const { isSuccess, data, message } = res.data;
     if (isSuccess && data) {
       return data;

@@ -14,6 +14,7 @@ import { formatDate } from 'date-fns';
 import { TPost } from '@/models/post.model';
 import PostSection from './components/post-section';
 import UpdatePasswordForm from './components/updatePasswordForm';
+import RatingHistory from './components/ratings-history';
 
 function MePage() {
   const [isOpenForm, setIsOpenForm] = useState(false);
@@ -111,6 +112,7 @@ function MePage() {
       <div className='border-t border-cyan-950 my-6' />
       <PostSection title='Bài viết đã xuất bản' isPublished={true} />
       <PostSection title='Bài viết chưa xuất bản' isPublished={false} />
+      <RatingHistory />
     </main>
   );
 }
