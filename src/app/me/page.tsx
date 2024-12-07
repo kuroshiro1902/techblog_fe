@@ -8,14 +8,16 @@ import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import userImage from '@/assets/default_avt.png';
 import { Button } from '@/components/ui/button';
-import { PenIcon } from 'lucide-react';
+import { LockKeyholeIcon, PenIcon } from 'lucide-react';
 import UpdateMeForm from './components/updateMeForm';
 import { formatDate } from 'date-fns';
 import { TPost } from '@/models/post.model';
 import PostSection from './components/post-section';
+import UpdatePasswordForm from './components/updatePasswordForm';
 
 function MePage() {
   const [isOpenForm, setIsOpenForm] = useState(false);
+  const [isOpenPasswordForm, setIsOpenPasswordForm] = useState(false);
   const [meProfile, setMeProfile] = useState<IUser | null>();
   const [error, setError] = useState('');
   useEffect(() => {
@@ -82,6 +84,14 @@ function MePage() {
           </p>
           <div className='absolute right-0 top-0 p-2'>
             <Button
+              title='Đổi mật khẩu'
+              className='h-6 p-2 mr-2'
+              variant='secondary'
+              onClick={() => setIsOpenPasswordForm(true)}
+            >
+              <LockKeyholeIcon />
+            </Button>
+            <Button
               title='Chỉnh sửa thông tin'
               className='h-6 p-2'
               variant='secondary'
@@ -91,6 +101,9 @@ function MePage() {
             </Button>
             {isOpenForm && (
               <UpdateMeForm user={meProfile} onClose={() => setIsOpenForm(false)} />
+            )}
+            {isOpenPasswordForm && (
+              <UpdatePasswordForm onClose={() => setIsOpenPasswordForm(false)} />
             )}
           </div>
         </div>

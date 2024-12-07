@@ -11,5 +11,9 @@ export const UserService = Object.freeze({
   updateMe: async (data: z.infer<typeof userUpdateSchema>) => {
     const res = await API.put<IUser>(path('/me/update'), {data});
     return res.data;
+  },
+  updatePassword: async (data: {oldPassword: string, newPassword: string}) => {
+    const res = await API.put<IUser>(path('/me/update-password'), {data});
+    return res.data;
   }
 });
