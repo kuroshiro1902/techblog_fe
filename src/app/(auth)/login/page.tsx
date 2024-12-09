@@ -15,6 +15,7 @@ import { userSchema } from '@/models/user.model';
 import FormInput from '@/components/form/formInput';
 import useAuthStore from '@/stores/auth.store';
 import { useLoadingStore } from '@/stores/loading.store';
+import { useSocket } from '@/stores/socket.store';
 
 const loginFormSchema = z.object({
   username: userSchema.shape.username,
@@ -24,6 +25,7 @@ const loginFormSchema = z.object({
 function LoginPage() {
   const { toast } = useToast();
   const setUser = useAuthStore((s) => s.setUser);
+  const connect = useSocket((s) => s.connect);
   const executeWithLoading = useLoadingStore((s) => s.executeWithLoading);
   const searchParams = useSearchParams();
   const [submitMessage, setSubmitMessage] = useState('');
@@ -47,6 +49,7 @@ function LoginPage() {
         if (isSuccess && data) {
           AuthService.setToken(data.token);
           setUser(data.user);
+          connect(data.token);
           toast({
             variant: 'success',
             title: 'Đăng nhập thành công!',

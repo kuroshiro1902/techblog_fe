@@ -9,16 +9,19 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import useAuthStore from '@/stores/auth.store';
 import { ChevronDown } from 'lucide-react';
+import { useSocket } from '@/stores/socket.store';
 
 export function UserNav() {
   const { user, setUser } = useAuthStore();
   const router = useRouter();
+  const disconnect = useSocket((s) => s.disconnect);
   const executeWithLoading = useLoadingStore((s) => s.executeWithLoading);
 
   const handleLogout = async () => {
     await executeWithLoading(async () => {
       AuthService.deleteToken();
       setUser(undefined);
+      disconnect();
       router.refresh();
     });
   };
