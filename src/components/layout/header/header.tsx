@@ -5,6 +5,7 @@ import { ThemeToggle } from '@/components/common/theme-toggle';
 import { Logo } from './logo';
 import { MainNav } from './main-nav';
 import { UserNav } from './user-nav';
+import Notification from './notification';
 
 function Header() {
   return (
@@ -14,6 +15,7 @@ function Header() {
           <Logo />
           <MainNav />
           <div className='flex items-center gap-2'>
+            <Notification />
             <ThemeToggle />
             <UserNav />
           </div>

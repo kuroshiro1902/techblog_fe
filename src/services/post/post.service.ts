@@ -8,6 +8,7 @@ import { TComment, TCreateComment, updateCommentSchema } from '@/models/comment.
 import { TPostRevision } from '@/models/post-revision.model';
 import { TOwnRating } from './models/own-rating.model';
 import { TOwnComment } from './models/own-comment.model';
+import { TNotification } from '@/models/notification.model';
 
 const path = apiPath('/posts');
 
@@ -206,8 +207,18 @@ export const PostService = Object.freeze({
   },
 
   isFavoritePost: async (postId: number) => {
-    const res = await API.get<{createdAt: Date} | null>(path(`/favorite/`+postId));
+    const res = await API.get<{createdAt: Date, notification: boolean} | null>(path(`/favorite/`+postId));
     const { isSuccess, data: data, message } = res.data;
+    if (isSuccess && data) {
+      return data;
+    } else {
+      throw new Error(message);
+    }
+  },
+
+  changePostNotification: async (postId: number, notification: boolean) =>{
+    const res = await API.post<{postId: number, notification: boolean}>(path('/notification/'+postId), {notification});
+    const { isSuccess, data, message } = res.data;
     if (isSuccess && data) {
       return data;
     } else {

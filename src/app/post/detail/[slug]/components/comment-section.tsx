@@ -27,7 +27,7 @@ export default function CommentSection({ postId }: CommentProps) {
   }, []);
 
   return (
-    <div>
+    <div className='mt-4'>
       <span className='font-bold text-lg'>Bình luận</span>
       <hr className='mb-2' />
       <CreateComment postId={postId} onSuccess={addComment} />
