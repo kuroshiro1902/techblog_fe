@@ -184,4 +184,34 @@ export const PostService = Object.freeze({
       throw new Error(message);
     }
   },
+
+  addFavoritePost: async (postId: number) => {
+    const res = await API.post<{post: Pick<TPost, 'id' | 'title' | 'slug'>, createdAt: Date}>(path(`/favorite/`+postId));
+    const { isSuccess, data: data, message } = res.data;
+    if (isSuccess && data) {
+      return data;
+    } else {
+      throw new Error(message);
+    }
+  },
+
+  deleteFavoritePost: async(postId: number) => {
+    const res = await API.delete<{id: number, postId: number}>(path(`/favorite/`+postId));
+    const { isSuccess, data: data, message } = res.data;
+    if (isSuccess && data) {
+      return data;
+    } else {
+      throw new Error(message);
+    }
+  },
+
+  isFavoritePost: async (postId: number) => {
+    const res = await API.get<{createdAt: Date} | null>(path(`/favorite/`+postId));
+    const { isSuccess, data: data, message } = res.data;
+    if (isSuccess && data) {
+      return data;
+    } else {
+      throw new Error(message);
+    }
+  }
 });

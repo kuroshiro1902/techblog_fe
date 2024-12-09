@@ -80,7 +80,7 @@ function Rating({ postId }: RatingProps) {
     </>
   );
   return (
-    <div className='border-t-secondary border-t-2 py-2 my-2'>
+    <div className=''>
       <p className='text-xs mb-2'>
         <RatingStatus ownRating={ownRating} />
       </p>

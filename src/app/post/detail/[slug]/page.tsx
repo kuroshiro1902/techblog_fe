@@ -15,6 +15,7 @@ import { Metadata } from 'next';
 import ScrollToTop from '@/components/common/scroll-to-top';
 import { EyeIcon, ThumbsDownIcon, ThumbsUpIcon } from 'lucide-react';
 import 'highlight.js/styles/github.min.css';
+import AddToFavoriteButton from './components/add-to-favorite';
 
 export async function generateMetadata({
   params,
@@ -138,7 +139,10 @@ async function PostDetailPage({ params }: { params: { slug: string } }) {
         <div className='mt-6'>
           <DynamicContent content={post.content} />
         </div>
-        <Rating postId={post.id} />
+        <div className='border-t-secondary border-t-2 py-2 my-2 flex flex-wrap justify-between gap-4 items-end'>
+          <Rating postId={post.id} />
+          <AddToFavoriteButton postId={post.id} />
+        </div>
         <CommentSection postId={post.id} />
         <ScrollToTop />
       </main>
