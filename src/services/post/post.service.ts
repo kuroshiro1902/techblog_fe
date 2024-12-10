@@ -186,6 +186,19 @@ export const PostService = Object.freeze({
     }
   },
 
+  getFavoritePosts: async (params: {
+    pageIndex?: number;
+    pageSize?: number;
+  }) => {
+    const res = await API.get<TFilterResponse<TPost>>(path('/favorites'), params);
+    const { isSuccess, data, message } = res.data;
+    if (isSuccess && data) {
+      return data;
+    } else {
+      throw new Error(message);
+    }
+  },
+
   addFavoritePost: async (postId: number) => {
     const res = await API.post<{post: Pick<TPost, 'id' | 'title' | 'slug'>, createdAt: Date}>(path(`/favorite/`+postId));
     const { isSuccess, data: data, message } = res.data;

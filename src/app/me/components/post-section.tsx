@@ -8,28 +8,18 @@ import { useCallback } from 'react';
 
 interface PostSectionProps {
   title: string;
-  isPublished: boolean;
+  fetchPosts: (
+    page: number,
+    pageSize: number
+  ) => Promise<{
+    data: TPost[];
+    currentPage: number;
+    pageSize: number;
+    totalPages: number;
+  }>;
 }
 
-export default function PostSection({ title, isPublished }: PostSectionProps) {
-  const fetchPosts = useCallback(
-    async (page: number, pageSize: number) => {
-      const response = await PostService.getOwnPosts({
-        pageIndex: page,
-        pageSize,
-        isPublished,
-      });
-
-      return {
-        data: response.data,
-        currentPage: response.pageInfo.pageIndex,
-        pageSize: response.pageInfo.pageSize,
-        totalPages: response.pageInfo.totalPage,
-      };
-    },
-    [isPublished]
-  );
-
+export default function PostSection({ title, fetchPosts }: PostSectionProps) {
   const renderPost = (post: TPost) => (
     <div key={post.id} className='w-full max-w-[300px]'>
       <PostCard post={post} />
@@ -58,11 +48,7 @@ export default function PostSection({ title, isPublished }: PostSectionProps) {
           preserveQuery: false, // Không giữ query params
         }}
         emptyComponent={
-          <div className='text-center py-8 text-gray-500'>
-            {isPublished
-              ? 'Bạn chưa có bài viết nào được xuất bản'
-              : 'Bạn chưa có bản nháp nào'}
-          </div>
+          <div className='text-center py-8 text-gray-500'>Không có bài viết nào.</div>
         }
       />
     </section>

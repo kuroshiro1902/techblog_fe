@@ -5,7 +5,7 @@ import { API } from '@/services/api';
 import { UserService } from '@/services/user/user.service';
 import { getApiErrorMessage } from '@/utils/getApiErrorMessage.util';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import userImage from '@/assets/default_avt.png';
 import { Button } from '@/components/ui/button';
 import { LockKeyholeIcon, PenIcon } from 'lucide-react';
@@ -16,12 +16,43 @@ import PostSection from './components/post-section';
 import UpdatePasswordForm from './components/updatePasswordForm';
 import RatingHistory from './components/ratings-history';
 import CommentHistory from './components/comments-history';
+import { PostService } from '@/services/post/post.service';
 
 function MePage() {
   const [isOpenForm, setIsOpenForm] = useState(false);
   const [isOpenPasswordForm, setIsOpenPasswordForm] = useState(false);
   const [meProfile, setMeProfile] = useState<IUser | null>();
   const [error, setError] = useState('');
+  const fetchOwnPosts = useCallback(
+    async (isPublished: boolean, page: number, pageSize: number) => {
+      const response = await PostService.getOwnPosts({
+        pageIndex: page,
+        pageSize,
+        isPublished,
+      });
+
+      return {
+        data: response.data,
+        currentPage: response.pageInfo.pageIndex,
+        pageSize: response.pageInfo.pageSize,
+        totalPages: response.pageInfo.totalPage,
+      };
+    },
+    []
+  );
+  const fetchFavoritePosts = useCallback(async (page: number, pageSize: number) => {
+    const response = await PostService.getFavoritePosts({
+      pageIndex: page,
+      pageSize,
+    });
+
+    return {
+      data: response.data,
+      currentPage: response.pageInfo.pageIndex,
+      pageSize: response.pageInfo.pageSize,
+      totalPages: response.pageInfo.totalPage,
+    };
+  }, []);
   useEffect(() => {
     UserService.getMe()
       .then(({ data, message }) => {
@@ -111,8 +142,15 @@ function MePage() {
         </div>
       </div>
       <div className='border-t border-cyan-950 my-6' />
-      <PostSection title='Bài viết đã xuất bản' isPublished={true} />
-      <PostSection title='Bài viết chưa xuất bản' isPublished={false} />
+      <PostSection
+        title='Bài viết đã xuất bản'
+        fetchPosts={(pageIndex, pageSize) => fetchOwnPosts(true, pageIndex, pageSize)}
+      />
+      <PostSection
+        title='Bài viết chưa xuất bản'
+        fetchPosts={(pageIndex, pageSize) => fetchOwnPosts(false, pageIndex, pageSize)}
+      />
+      <PostSection title='Bài viết yêu thích' fetchPosts={fetchFavoritePosts} />
       <RatingHistory />
       <CommentHistory />
     </main>
