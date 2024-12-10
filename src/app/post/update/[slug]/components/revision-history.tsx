@@ -70,13 +70,15 @@ export default function RevisionHistory({ postId, onSelectRevision }: RevisionHi
               className='flex items-center justify-between p-4 border rounded-lg bg-primary/5'
             >
               <div>
-                <div className='flex items-center gap-2'>
-                  <h4 className='font-medium'>{revision.title}</h4>
-                  {revision.isActive && (
+                {revision.isActive && (
+                  <p>
                     <Badge variant='secondary' className='text-xs'>
                       Phiên bản hiện tại
                     </Badge>
-                  )}
+                  </p>
+                )}
+                <div className='flex items-center gap-2'>
+                  <h4 className='font-medium'>{revision.title}</h4>
                 </div>
                 <p className='text-sm text-gray-500'>
                   Chỉnh sửa lúc: {dayjs(revision.createdAt).format('DD/MM/YYYY HH:mm:ss')}

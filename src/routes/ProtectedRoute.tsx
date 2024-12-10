@@ -2,7 +2,7 @@
 
 import { AuthService } from '@/services/auth/auth.service';
 import { useRouter } from 'next/navigation';
-import { Dispatch, Fragment, SetStateAction, useEffect } from 'react';
+import { Dispatch, Fragment, memo, SetStateAction, useEffect } from 'react';
 import { ROUTE } from './routes';
 import { useLoadingStore } from '@/stores/loading.store';
 import useAuthStore from '@/stores/auth.store';
@@ -36,4 +36,4 @@ function ProtectedRoute({ setAuth }: ProtectedRouteProps) {
   return <Fragment />;
 }
 
-export default ProtectedRoute;
+export default memo(ProtectedRoute);

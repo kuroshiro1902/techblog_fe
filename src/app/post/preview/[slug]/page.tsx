@@ -9,14 +9,17 @@ import dayjs from 'dayjs';
 import { ThumbsDownIcon, ThumbsUpIcon } from 'lucide-react';
 import DynamicContent from '@/components/common/dynamic-content';
 import { TPost } from '@/models/post.model';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { PostService } from '@/services/post/post.service';
 import { getApiErrorMessage } from '@/utils/getApiErrorMessage.util';
 import useAuthStore from '@/stores/auth.store';
 import ProtectedRoute from '@/routes/ProtectedRoute';
 import 'highlight.js/styles/github.min.css';
+import hljs from 'highlight.js';
 
 export default function PostPreviewPage({ params }: { params: { slug: string } }) {
+  const contentRef = useRef<HTMLDivElement>(null);
+
   const [post, setPost] = useState<TPost | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -45,6 +48,28 @@ export default function PostPreviewPage({ params }: { params: { slug: string } }
 
     fetchPost();
   }, [params.slug, auth, user]);
+
+  useEffect(() => {
+    const highlightCode = () => {
+      contentRef.current?.querySelectorAll('select.ql-ui').forEach((e) => e.remove());
+      contentRef.current?.querySelectorAll('[data-language]').forEach((el) => {
+        const language = el.getAttribute('data-language'); // Lấy giá trị ngôn ngữ
+        const code = el.textContent; // Lấy nội dung code
+
+        if (code && language) {
+          // Highlight code với ngôn ngữ chỉ định
+          try {
+            const highlightedCode = hljs.highlight(code, { language }).value;
+
+            // Gắn lại mã code đã highlight vào element
+            el.innerHTML = highlightedCode;
+          } catch (error) {}
+          el.classList.add('hljs', 'font-mono'); // Đảm bảo thêm class hljs để áp dụng style
+        }
+      });
+    };
+    highlightCode();
+  }, [post?.slug]);
 
   if (!auth) {
     return (
@@ -157,7 +182,11 @@ export default function PostPreviewPage({ params }: { params: { slug: string } }
       )}
 
       <div className='mt-6'>
-        <DynamicContent content={post.content} />
+        <div
+          ref={contentRef}
+          className={`dynamic-content ql-editor`}
+          dangerouslySetInnerHTML={{ __html: post.content }}
+        />
       </div>
     </main>
   );
