@@ -1,70 +1,104 @@
-import Link from 'next/link';
+'use client';
+
 import { ROUTE } from '@/routes/routes';
-import { Dropdown } from '@/components/common/dropdown';
+import { SlidePanel } from '@/components/common/slide-panel';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, MenuIcon } from 'lucide-react';
 
 const mainNavItems = [
   { title: 'Trang chủ', href: ROUTE.HOME },
   {
-    title: 'Danh mục',
+    title: 'Thể loại',
     items: [
-      {
-        title: 'Bài viết nổi bật',
-        description: 'Các bài viết được nhiều lượt xem nhất trong tháng.',
-        href: '/hot',
-      },
-      {
-        title: 'Tác giả nổi bật',
-        description: 'Các tác giả được đánh giá cao.',
-        href: '/best-author',
-      },
-      { title: 'Học tập', href: '/learn' },
+      { title: 'Frontend', href: '/post?categoryId=1' },
+      { title: 'Backend', href: '/post?categoryId=2' },
+      { title: 'Fullstack', href: '/post?categoryId=3' },
     ],
   },
+  { title: 'Bài viết', href: '/post' },
+  { title: 'Bài viết mới', href: '/post?orderBy=createdAt-desc' },
+  { title: 'Bài viết nổi bật', href: '/post?orderBy=views-desc' },
 ];
 
 export function MainNav() {
+  const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
+
   return (
-    <nav className='flex items-center gap-1 min-[360px]:gap-2'>
-      {mainNavItems.map((item, index) => (
-        <div key={index}>
-          {item.items ? (
-            <Dropdown
-              trigger={
-                <Button
-                  variant='ghost'
-                  className='flex items-center gap-1 min-[360px]:px-4 px-2'
-                >
+    <nav className='relative'>
+      {/* Desktop Navigation */}
+      <ul className='hidden md:flex items-center gap-4'>
+        {mainNavItems.map((item, index) => (
+          <li key={index} className='relative group'>
+            {item.items ? (
+              <div className='relative'>
+                <Button variant='ghost' className='px-4 py-2'>
                   {item.title}
-                  <ChevronDown className='h-4 w-4' />
+                  <ChevronDown className='h-4 w-4 ml-2' />
                 </Button>
-              }
-            >
-              <div className='py-1'>
-                {item.items.map((subItem, i) => (
-                  <Link
-                    key={i}
-                    href={subItem.href || '#'}
-                    className='block py-2 text-sm hover:bg-accent min-[360px]:px-4 px-2'
-                  >
-                    <div>{subItem.title}</div>
-                    {subItem.description && (
-                      <p className='text-xs text-muted-foreground'>{subItem.description}</p>
-                    )}
-                  </Link>
-                ))}
+                <ul className='absolute left-0 top-full hidden group-hover:block bg-background shadow-md shadow-slate-800 min-w-32 rounded'>
+                  {item.items.map((subItem, i) => (
+                    <li key={i}>
+                      <a href={subItem.href} className='block px-4 py-2 hover:bg-secondary'>
+                        {subItem.title}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
               </div>
-            </Dropdown>
-          ) : (
-            <Link href={item.href || '#'}>
-              <Button className='min-[360px]:px-4 px-2' variant='ghost'>
-                {item.title}
-              </Button>
-            </Link>
-          )}
-        </div>
-      ))}
+            ) : (
+              <a href={item.href}>
+                <Button variant='ghost' className='px-4 py-2'>
+                  {item.title}
+                </Button>
+              </a>
+            )}
+          </li>
+        ))}
+      </ul>
+
+      {/* Mobile Navigation */}
+      <div className='md:hidden'>
+        <Button
+          onClick={() => setMobileMenuOpen(true)}
+          className='py-2 px-4'
+          variant='secondary'
+        >
+          <MenuIcon />
+        </Button>
+
+        <SlidePanel
+          isOpen={isMobileMenuOpen}
+          onClose={() => setMobileMenuOpen(false)}
+          title='Menu'
+          width='260px'
+        >
+          <ul>
+            {mainNavItems.map((item, index) => (
+              <li key={index} className='mb-2'>
+                {item.items ? (
+                  <div className='flex flex-col'>
+                    <span className='block font-semibold px-4 py-2'>{item.title}</span>
+                    <ul className='pl-4'>
+                      {item.items.map((subItem, i) => (
+                        <li key={i}>
+                          <a href={subItem.href} className='block px-4 py-2 hover:bg-secondary'>
+                            {subItem.title}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ) : (
+                  <a href={item.href} className='block px-4 py-2 hover:bg-secondary'>
+                    {item.title}
+                  </a>
+                )}
+              </li>
+            ))}
+          </ul>
+        </SlidePanel>
+      </div>
     </nav>
   );
 }

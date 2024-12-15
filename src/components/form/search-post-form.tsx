@@ -43,6 +43,7 @@ const orderBys = [
 ];
 function SearchPostForm({
   defaultValue,
+  disabled,
 }: {
   defaultValue: ISearchPostParams;
   disabled?: boolean;

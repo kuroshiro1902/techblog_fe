@@ -91,7 +91,7 @@ const NotificationList = () => {
       <Button
         title='Thông báo'
         variant='outline'
-        className='flex items-center gap-1'
+        className='flex items-center gap-1 !border-none'
         onClick={toggleNotificationList}
       >
         <BellIcon size={20} className='pt-[2px]' />
