@@ -67,16 +67,22 @@ function MePage() {
   if (meProfile === null) {
     return (
       <main className='max-w-screen-lg m-auto flex flex-col justify-between lg:p-8 p-4'>
+        <title>Tech Blog - Trang cá nhân</title>
         <p>{error ?? 'CANNOT GET YOUR PROFILE! Try again later.'}</p>
         <a href={ROUTE.HOME}>Home</a>
       </main>
     );
   }
   if (meProfile === undefined) {
-    return <div>Loading...</div>;
+    return (
+      <div>
+        Loading... <title>Tech Blog - Trang cá nhân</title>
+      </div>
+    );
   }
   return (
     <main className='max-w-screen-lg m-auto flex flex-col justify-between lg:p-8 p-4'>
+      <title>Tech Blog - Trang cá nhân</title>
       <div className='flex gap-4 flex-wrap'>
         <div>
           <Image

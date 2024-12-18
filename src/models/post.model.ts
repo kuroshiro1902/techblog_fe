@@ -42,6 +42,7 @@ export const postFilterSchema = z.object({
   categoryId: z.array(z.number().int().positive()).default([]),
   pageIndex: z.number().min(1).default(1),
   pageSize: z.number().min(0).default(12),
+  authorId: z.number().min(1).optional(),
   orderBy: z.string().trim().regex(/^[a-zA-Z_]+-(asc|desc)$/, {
     message: "OrderBy must be in the format 'field-asc' or 'field-desc'",
   }).default('createdAt-desc'),

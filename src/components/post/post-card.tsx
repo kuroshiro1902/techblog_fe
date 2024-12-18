@@ -23,7 +23,7 @@ export interface PostCardProps {
 const LinkPost = ({ post, children }: any) => (
   <Link
     className='text-overflow-max-line-2 hover:text-primary transition-colors'
-    href={post?.slug ? `post/${post.isPublished ? 'detail' : 'preview'}/${post.slug}` : ''}
+    href={post?.slug ? `/post/${post.isPublished ? 'detail' : 'preview'}/${post.slug}` : ''}
     target='_blank'
     title={post?.title}
   >
