@@ -2,7 +2,7 @@
 import * as React from 'react';
 import { ROUTE } from '@/routes/routes';
 import { ThemeToggle } from '@/components/common/theme-toggle';
-import { Logo } from './logo';
+import { Logo } from '../logo';
 import { MainNav } from './main-nav';
 import { UserNav } from './user-nav';
 import NotificationList from './notification-list';

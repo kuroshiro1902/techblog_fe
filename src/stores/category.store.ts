@@ -7,6 +7,7 @@ interface CategoryData {
   isFetchedCategory: boolean;
   categories: TCategory[];
   fetchCategories: () => Promise<TCategory[]>,
+  clear: () => void,
   // setCategory: (categories: TCategory[]) => void;
 }
 
@@ -26,6 +27,9 @@ export const useCategoryStore = create<CategoryData>((set, get, k) => ({
       });
     }
     return categories;
+  },
+  clear: () => {
+    set({categories: [], isFetchedCategory: false});
   },
   // setCategory(categories) {
   //   set({ categories });

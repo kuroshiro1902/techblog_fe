@@ -9,6 +9,7 @@ import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 import { Suspense } from 'react';
+import Footer from '@/components/layout/footer/footer';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -33,6 +34,7 @@ export default function RootLayout({
         <Toaster />
         <Header />
         <Suspense fallback={<LoadingOverlay width={90} height={90} />}>{children}</Suspense>
+        <Footer />
       </body>
     </html>
   );
