@@ -12,6 +12,25 @@ import { formatDate } from 'date-fns';
 import NavigateToMe from './components/navigateToMe';
 import PostSection from '@/app/me/components/post-section';
 import { PostService } from '@/services/post/post.service';
+import { UserPlusIcon } from 'lucide-react';
+import { FollowButton } from './components/follow-button';
+
+const UserCard = ({ user }: { user: IUser }) => {
+  return (
+    <a href={'/user/' + user.id} target='_blank'>
+      <Button variant='outline' className='h-8 inline-flex p-1 gap-2 items-center'>
+        <Image
+          className='rounded-full'
+          src={user.avatarUrl ?? userImage}
+          width={20}
+          height={20}
+          alt={user.name}
+        />
+        <span>{user.name}</span>
+      </Button>
+    </a>
+  );
+};
 
 export async function generateMetadata({
   params,
@@ -48,6 +67,15 @@ export async function generateMetadata({
 async function UserDetailPage({ params }: { params: { id: string } }) {
   try {
     const { data: user } = await UserService.getUserProfile(+params.id);
+    const [followerRes, followingRes] = await Promise.allSettled([
+      UserService.getFollowers(+params.id),
+      UserService.getFollowing(+params.id),
+    ]);
+
+    const followers = followerRes.status === 'fulfilled' ? followerRes.value.data : [];
+
+    const following = followingRes.status === 'fulfilled' ? followingRes.value.data : [];
+
     if (!user) {
       throw new Error('Không tìm thấy thấy thông tin người dùng!');
     }
@@ -107,9 +135,26 @@ async function UserDetailPage({ params }: { params: { id: string } }) {
                 </i>
               </small>
             </p>
+            <div className='absolute right-0 top-0 p-2'>
+              <FollowButton userId={user.id} />
+            </div>
           </div>
         </div>
         <div className='border-t border-cyan-950 my-6' />
+        <div className='flex gap-2 flex-wrap' role='list' data-role='followers'>
+          <div className='flex-1 max-h-40 overflow-y-auto'>
+            <h6>Người theo dõi</h6>
+            {followers?.map((u, i) => (
+              <UserCard key={i} user={u} />
+            ))}
+          </div>
+          <div className='flex-1 max-h-40 overflow-y-auto'>
+            <h6>Người đang theo dõi</h6>
+            {following?.map((u, i) => (
+              <UserCard key={i} user={u} />
+            ))}
+          </div>
+        </div>
         <PostSection title='Bài viết đã xuất bản' fetchPosts={fetchOwnPosts} />
       </main>
     );

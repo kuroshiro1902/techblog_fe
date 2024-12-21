@@ -17,11 +17,14 @@ import UpdatePasswordForm from './components/updatePasswordForm';
 import RatingHistory from './components/ratings-history';
 import CommentHistory from './components/comments-history';
 import { PostService } from '@/services/post/post.service';
+import { UserCard } from './components/user-card';
 
 function MePage() {
   const [isOpenForm, setIsOpenForm] = useState(false);
   const [isOpenPasswordForm, setIsOpenPasswordForm] = useState(false);
   const [meProfile, setMeProfile] = useState<IUser | null>();
+  const [followers, setFollowers] = useState<IUser[]>([]);
+  const [following, setFollowing] = useState<IUser[]>([]);
   const [error, setError] = useState('');
   const fetchOwnPosts = useCallback(
     async (isPublished: boolean, page: number, pageSize: number) => {
@@ -58,6 +61,18 @@ function MePage() {
       .then(({ data, message }) => {
         setMeProfile(data ?? null);
         setError(message ?? '');
+        if (data) {
+          Promise.allSettled([
+            UserService.getFollowers(data.id),
+            UserService.getFollowing(data.id),
+          ]).then(([followerRes, followingRes]) => {
+            const followers = followerRes.status === 'fulfilled' ? followerRes.value.data : [];
+            const following =
+              followingRes.status === 'fulfilled' ? followingRes.value.data : [];
+            setFollowers(followers ?? []);
+            setFollowing(following ?? []);
+          });
+        }
       })
       .catch((err) => {
         setError(getApiErrorMessage(err));
@@ -148,6 +163,20 @@ function MePage() {
         </div>
       </div>
       <div className='border-t border-cyan-950 my-6' />
+      <div className='flex gap-2 flex-wrap' role='list' data-role='followers'>
+        <div className='flex-1 max-h-40 overflow-y-auto'>
+          <h6>Người theo dõi</h6>
+          {followers?.map((u, i) => (
+            <UserCard key={i} user={u} />
+          ))}
+        </div>
+        <div className='flex-1 max-h-40 overflow-y-auto'>
+          <h6>Người đang theo dõi</h6>
+          {following?.map((u, i) => (
+            <UserCard key={i} user={u} />
+          ))}
+        </div>
+      </div>
       <PostSection
         title='Bài viết đã xuất bản'
         fetchPosts={(pageIndex, pageSize) => fetchOwnPosts(true, pageIndex, pageSize)}
