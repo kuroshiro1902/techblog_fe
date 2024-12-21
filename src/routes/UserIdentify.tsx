@@ -19,7 +19,9 @@ function UserIdentify() {
           const res = await AuthService.verifyAndRefreshToken();
           if (res?.token) {
             AuthService.setToken(res.token);
-            Socket.connect(res.token);
+            if (!Socket.socket) {
+              Socket.connect(res.token);
+            }
           }
           if (res?.user) {
             setUser(res.user);
@@ -29,6 +31,10 @@ function UserIdentify() {
     };
 
     identifyUser();
+
+    return () => {
+      Socket.socket?.disconnect();
+    };
   }, []);
 
   return <Fragment />;

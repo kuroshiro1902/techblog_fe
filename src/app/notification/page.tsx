@@ -7,7 +7,8 @@ import ProtectedRoute from '@/routes/ProtectedRoute';
 import { NotificationService } from '@/services/notification/notification.service';
 import { PostService } from '@/services/post/post.service';
 import useAuthStore from '@/stores/auth.store';
-import { useCallback, useEffect, useState } from 'react';
+import { ENotificationEvent, useSocket } from '@/stores/socket.store';
+import { useCallback, useEffect, useLayoutEffect, useState } from 'react';
 
 function NotificationPage() {
   const [auth, setAuth] = useState(false);
@@ -17,6 +18,7 @@ function NotificationPage() {
   const [activeMenu, setActiveMenu] = useState<number | null>(null); // Lưu id của notification đang mở
   const [hasNextPage, setHasNextPage] = useState(false);
   const [pageIndex, setPageIndex] = useState(1);
+  const { onEvent, offEvent, socket } = useSocket();
 
   const toggleMenu = useCallback((id: number) => {
     setActiveMenu((prev) => (prev === id ? null : id)); // Nếu menu đã mở thì đóng, nếu chưa thì mở menu đó
@@ -79,16 +81,27 @@ function NotificationPage() {
   }, [pageIndex, toast]);
 
   useEffect(() => {
+    // Xử lý click bên ngoài notification
     const _onWindowClick = (event: MouseEvent) => {
       const target = event.target as HTMLElement;
-      // Kiểm tra nếu click xảy ra bên trong component
       if (target.closest('#notification-page-container-list')) return;
       setActiveMenu(null);
     };
-
     let onWindowClick: (event: MouseEvent) => void = () => {};
 
+    // Lắng nghe sự kiện thông báo từ server
+    const onNewNotification = (data: TNotification) => {
+      setNotifications((prev) => {
+        const p = [...prev];
+        p.pop();
+        console.log('socket nhận noti: ', socket?.id);
+
+        return [data, ...p];
+      });
+    };
+
     if (user) {
+      // Lấy thông báo của người dùng
       NotificationService.getOwnNotifications({ pageIndex: 1, pageSize: 8 }).then((res) => {
         if (res) {
           setNotifications(res.data);
@@ -97,11 +110,25 @@ function NotificationPage() {
         }
       });
       onWindowClick = _onWindowClick;
+
+      if (socket?.connected) {
+        // Đăng ký lắng nghe sự kiện
+        onEvent(ENotificationEvent.POST_NEW_COMMENT, onNewNotification);
+        onEvent(ENotificationEvent.POST_NEW, onNewNotification);
+      }
+      // Cleanup function
+      return () => {
+        document.removeEventListener('click', onWindowClick, { capture: true });
+        offEvent(ENotificationEvent.POST_NEW_COMMENT, onNewNotification);
+        offEvent(ENotificationEvent.POST_NEW, onNewNotification);
+      };
     }
 
     document.addEventListener('click', onWindowClick, { capture: true });
-    return () => document.removeEventListener('click', onWindowClick, { capture: true });
-  }, [user]);
+    return () => {
+      document.removeEventListener('click', onWindowClick, { capture: true });
+    };
+  }, [onEvent, offEvent, user, socket]);
 
   if (!user) {
     return <></>;

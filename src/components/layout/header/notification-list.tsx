@@ -9,12 +9,14 @@ import { TNotification } from '@/models/notification.model';
 import { PostService } from '@/services/post/post.service';
 import { useToast } from '@/components/hooks/use-toast';
 import Notification from '@/components/notification/notification';
+import { ENotificationEvent, useSocket } from '@/stores/socket.store';
 const NotificationList = () => {
   const { toast } = useToast();
   const { user } = useAuthStore();
   const [isOpen, setIsOpen] = useState(false);
   const [notifications, setNotifications] = useState<TNotification[]>([]);
   const [activeMenu, setActiveMenu] = useState<number | null>(null); // Lưu id của notification đang mở
+  const { onEvent, offEvent, socket } = useSocket();
 
   const toggleNotificationList = () => {
     setIsOpen(!isOpen);
@@ -75,11 +77,33 @@ const NotificationList = () => {
         setIsOpen(false);
         setActiveMenu(null);
       };
+      // Lắng nghe sự kiện thông báo từ server
+      const onNewNotification = (data: TNotification) => {
+        setNotifications((prev) => {
+          const p = [...prev];
+          p.pop();
+          console.log('socket nhận noti: ', socket?.id);
+          return [data, ...p];
+        });
+        NotificationService.getOwnNotifications({ pageIndex: 1, pageSize: 8 }).then((res) => {
+          if (res) {
+            setNotifications(res.data);
+          }
+        });
+      };
 
       document.addEventListener('click', onWindowClick, { capture: true });
-      return () => document.removeEventListener('click', onWindowClick, { capture: true });
+
+      // Lắng nghe sự kiện thông báo từ server
+      onEvent(ENotificationEvent.POST_NEW_COMMENT, onNewNotification);
+      onEvent(ENotificationEvent.POST_NEW, onNewNotification);
+      return () => {
+        document.removeEventListener('click', onWindowClick, { capture: true });
+        offEvent(ENotificationEvent.POST_NEW_COMMENT, onNewNotification);
+        offEvent(ENotificationEvent.POST_NEW, onNewNotification);
+      };
     }
-  }, [user]);
+  }, [user, socket, onEvent, offEvent]);
 
   if (!user) {
     return <></>;
@@ -94,11 +118,15 @@ const NotificationList = () => {
         className='flex items-center gap-1 !border-none'
         onClick={toggleNotificationList}
       >
-        <BellIcon size={20} className='pt-[2px]' />
-        {notifications.some((n) => !n.read) && (
-          <span className='ml-1 text-primary font-semibold'>
-            {notifications.filter((n) => !n.read).length}
-          </span>
+        {notifications.some((n) => !n.read) ? (
+          <>
+            <BellIcon size={20} className='pt-[2px] text-primary' />
+            <span className='ml-1 text-primary font-semibold'>
+              {notifications.filter((n) => !n.read).length}
+            </span>
+          </>
+        ) : (
+          <BellIcon size={20} className='pt-[2px]' />
         )}
       </Button>
 

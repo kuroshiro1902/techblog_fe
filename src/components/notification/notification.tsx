@@ -3,6 +3,7 @@ import { TNotification } from '@/models/notification.model';
 import s from './notification.module.scss';
 import { Button } from '../ui/button';
 import { MoreHorizontalIcon } from 'lucide-react';
+import { formatDate } from 'date-fns';
 
 interface NotificationProps extends HTMLAttributes<HTMLDivElement> {
   notification: TNotification;
@@ -44,6 +45,15 @@ const Notification = forwardRef<HTMLDivElement, NotificationProps>(
             notification.itemType === 'post' ? `/post/detail/${notification.post.slug}` : '#'
           }
         >
+          {notification.createdAt && (
+            <time
+              className={`text-xs ${
+                notification.read ? 'text-foreground/70' : 'text-secondary/70'
+              }`}
+            >
+              {formatDate(notification.createdAt, 'HH:mm dd/MM/yyyy')}
+            </time>
+          )}
           <div
             onClick={() => markAsRead(notification.id)}
             className={`${s.notificationContent} text-ellipsis line-clamp-${
