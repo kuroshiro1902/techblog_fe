@@ -8,7 +8,7 @@ import DynamicContent from '@/components/common/dynamic-content';
 import { useCallback, useState } from 'react';
 import s from './styles.module.scss';
 import { Button } from '@/components/ui/button';
-import { ThumbsUp, ThumbsDown, Pencil } from 'lucide-react';
+import { ThumbsUp, ThumbsDown, Pencil, InfoIcon } from 'lucide-react';
 import { ReplyForm } from './reply-form';
 import { PostService } from '@/services/post/post.service';
 import { useLoadingStore } from '@/stores/loading.store';
@@ -19,6 +19,10 @@ import { CommentReactions } from './comment-reactions';
 import { EditForm } from './edit-form';
 import useAuthStore from '@/stores/auth.store';
 import { DeleteComment } from './delete-comment';
+import { getApiErrorMessage } from '@/utils/getApiErrorMessage.util';
+import clsx from 'clsx';
+import { cn } from '@/lib/utils';
+import { ERatingScore } from '@/constant/rating-score.const';
 
 const CommentHeader = ({ comment }: { comment: TComment }) => {
   return (
@@ -79,7 +83,9 @@ function SingleComment({
           addComment(response);
           setShowReplyForm(false);
         })
-        .catch((error) => {});
+        .catch((error: any) => {
+          toast({ title: getApiErrorMessage(error), variant: 'destructive' });
+        });
     },
     [addComment, comment.id, postId]
   );
@@ -93,12 +99,12 @@ function SingleComment({
           ...prevComment,
           content: updatedComment.content,
           updatedAt: updatedComment.updatedAt,
+          impScore: updatedComment.impScore,
         }));
         setIsEditing(false);
-      } catch (error) {
+      } catch (error: any) {
         toast({
-          title: 'Lỗi',
-          description: 'Không thể cập nhật bình luận',
+          title: getApiErrorMessage(error),
           variant: 'destructive',
         });
       }
@@ -117,8 +123,28 @@ function SingleComment({
     <div
       id={`comment-${comment.id}`}
       role='comment'
-      className='border border-gray-200 p-2 mt-2'
+      className='border border-gray-200 p-2 mt-2 relative'
     >
+      <div
+        title={`${comment.user.name} ${
+          comment.impScore === ERatingScore.LIKE
+            ? 'thích'
+            : comment.impScore === ERatingScore.DISLIKE
+            ? 'không thích'
+            : 'trung tính với'
+        } bài viết này (Được đánh giá bởi AI).`}
+        className={cn(`absolute left-0 top-0`, {
+          'bg-green-500/70': comment.impScore === ERatingScore.LIKE,
+          'bg-red-500/70': comment.impScore === ERatingScore.DISLIKE,
+          'bg-gray-500/70': comment.impScore === null || comment.impScore === ERatingScore.NONE,
+        })}
+        data-role='comment-sentiment'
+        style={{
+          width: 12,
+          height: 12,
+          clipPath: 'polygon(0% 0%, 0% 100%, 100% 0%)',
+        }}
+      />
       <div className='flex items-center justify-between'>
         <div className='flex items-center gap-2'>
           <Link

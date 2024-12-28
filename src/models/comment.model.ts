@@ -21,7 +21,7 @@ export const commentSchema = z.object({
   user: userSchema.pick({ id: true, name: true, avatarUrl: true }),
 });
 
-export type TComment = z.infer<typeof commentSchema>  & {rating: TRatingInfo} & {ownRating?: ERatingScore};
+export type TComment = z.infer<typeof commentSchema>  & {rating: TRatingInfo} & {ownRating?: ERatingScore} & {impScore?: ERatingScore | null};
 
 export const createCommentSchema = commentSchema.pick({
   content: true,

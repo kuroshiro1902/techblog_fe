@@ -13,6 +13,7 @@ const nextConfig = {
     CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET,
   },
   images: {
+    dangerouslyAllowSVG: true,
     remotePatterns: [
       {
         protocol: undefined,
@@ -26,7 +27,7 @@ const nextConfig = {
     return [
       {
         source: '/api/:path*',
-        destination: 'http://localhost:4537/:path*',
+        destination: 'http://26.8.234.33:4537/:path*',
       },
     ];
   },

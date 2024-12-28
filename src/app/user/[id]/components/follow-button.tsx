@@ -90,6 +90,7 @@ export function FollowButton({ userId }: FollowButtonProps) {
       </Button>
       {isFollowing && (
         <Button
+          className='ml-1'
           title={isNotification ? 'Đang bật thông báo' : 'Bật thông báo'}
           variant={isNotification ? 'default' : 'outline'}
           onClick={handleNotification}

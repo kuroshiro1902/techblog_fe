@@ -51,7 +51,7 @@ export async function generateMetadata({
 async function PostDetailPage({ params }: { params: { slug: string } }) {
   try {
     const post = await PostService.getDetailPost({ slug: params.slug });
-
+    console.log({ post });
     return (
       <main className='max-w-screen-lg m-auto flex flex-col justify-between lg:p-8 p-4'>
         <NavigateToUpdatePage postSlug={post.slug} authorId={post.author.id} />
@@ -132,7 +132,7 @@ async function PostDetailPage({ params }: { params: { slug: string } }) {
               alt={post?.title ?? ''}
               width={480}
               height={480}
-              quality={100}
+              quality={85}
             />
           </div>
         )}

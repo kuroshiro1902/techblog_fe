@@ -106,6 +106,7 @@ function MePage() {
             alt={meProfile.name}
             quality={80}
             height={140}
+            width={140}
             style={{ height: 140, aspectRatio: 1 / 1, objectFit: 'contain' }}
           />
         </div>

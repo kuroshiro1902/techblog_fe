@@ -11,6 +11,8 @@ import Image from 'next/image';
 import { useForm, Controller } from 'react-hook-form';
 import defaultAvt from '@/assets/default_avt.png';
 import Editor from '@/components/editor/editor';
+import { toast } from '@/components/hooks/use-toast';
+import { getApiErrorMessage } from '@/utils/getApiErrorMessage.util';
 
 interface CreateCommentProps {
   postId: number;
@@ -34,8 +36,8 @@ function CreateComment({ postId, onSuccess }: CreateCommentProps) {
       const newComment = await PostService.createComment(comment);
       onSuccess(newComment);
       setValue('content', '');
-    } catch (error) {
-      console.error('Failed to submit comment:', error);
+    } catch (error: any) {
+      toast({ title: getApiErrorMessage(error), variant: 'destructive' });
     }
   };
 

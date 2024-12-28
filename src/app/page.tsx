@@ -11,6 +11,7 @@ import Link from 'next/link';
 import { Metadata } from 'next';
 import { ISearchPostParams } from '@/components/form/search-post-form';
 import PostSection from './components/post-section';
+import CommentBlock from './components/commect-block';
 
 export async function generateMetadata(): Promise<Metadata> {
   const title = `Tech Blog - Nền tảng chia sẻ kiến thức công nghệ trực tuyến.`;
@@ -72,8 +73,13 @@ export default async function HomePage() {
       </p>
       <div className='max-w-screen-lg m-auto px-2 py-4 lg:py-8 w-full'>
         <CategorySection />
-        <PostSection title='Bài viết nổi bật' posts={hotPosts} />
-        <PostSection title='Bài viết mới nhất' posts={newPosts} />
+        <div className=''>
+          <PostSection title='Bài viết nổi bật' posts={hotPosts} />
+          <PostSection title='Bài viết mới nhất' posts={newPosts} />
+        </div>
+        <div className=''>
+          <CommentBlock />
+        </div>
       </div>
     </main>
   );

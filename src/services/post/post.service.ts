@@ -131,6 +131,19 @@ export const PostService = Object.freeze({
     }
   },
 
+  getAllComments: async (params: {
+    pageIndex?: number;
+    pageSize?: number;
+  }) => {
+    const res = await ServerSideAPI.get<TFilterResponse<TComment & {post: {slug: string}} >>(path('/all-comments'), params);
+    const { isSuccess, data, message } = res.data;
+    if (isSuccess && data) {
+      return data;
+    } else {
+      throw new Error(message);
+    }
+  },
+
   loadComments: async (params: {
     postId?: number;
     parentCommentId?: number;
@@ -232,6 +245,16 @@ export const PostService = Object.freeze({
   changePostNotification: async (postId: number, notification: boolean) =>{
     const res = await API.post<{postId: number, notification: boolean}>(path('/notification/'+postId), {notification});
     const { isSuccess, data, message } = res.data;
+    if (isSuccess && data) {
+      return data;
+    } else {
+      throw new Error(message);
+    }
+  },
+
+  getPostById: async (id: number): Promise<TPost> => {
+    const response = await API.get<TPost>(`/posts/${id}`);
+    const { isSuccess, data, message } = response.data; 
     if (isSuccess && data) {
       return data;
     } else {

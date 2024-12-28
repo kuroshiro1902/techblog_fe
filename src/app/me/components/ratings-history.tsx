@@ -41,7 +41,7 @@ export default function RatingHistory() {
             </time>
           )}
           <span>
-            Bạn đã {like ? 'thích' : 'thông thích'} <b>{rating.post?.title}</b>.
+            Bạn đã {like ? 'thích' : 'không thích'} <b>{rating.post?.title}</b>.
           </span>
         </a>
       </p>
