@@ -16,6 +16,7 @@ import ScrollToTop from '@/components/common/scroll-to-top';
 import { EyeIcon, ThumbsDownIcon, ThumbsUpIcon } from 'lucide-react';
 import 'highlight.js/styles/github.min.css';
 import AddToFavoriteButton from './components/add-to-favorite';
+import DescriptionButton from './components/descriptionButton';
 
 export async function generateMetadata({
   params,
@@ -79,9 +80,9 @@ async function PostDetailPage({ params }: { params: { slug: string } }) {
           <span>Thể loại: </span>
           {post.categories.length === 0 && <i>Không xác định</i>}
           {post.categories.map((category, i) => (
-            <Link href={'/?category=' + category.id} key={i}>
+            <a href={'/post?categoryId=' + category.id} target='_blank' key={i}>
               <Badge className='bg-foreground'>{category.name}</Badge>
-            </Link>
+            </a>
           ))}
         </div>
         <div className='py-2'></div>
@@ -137,6 +138,7 @@ async function PostDetailPage({ params }: { params: { slug: string } }) {
           </div>
         )}
         <div className='mt-6'>
+          <DescriptionButton postId={post.id} />
           <DynamicContent content={post.content} />
         </div>
         <div className='border-t-secondary border-t-2 py-2 my-2 flex flex-wrap justify-between gap-4 items-end'>

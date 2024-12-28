@@ -36,7 +36,8 @@ export const createPostSchema = postSchema.pick({
   content: true,
   isPublished: true,
   thumbnailUrl: true,
-}).extend({categories: z.array(categorySchema.pick({ id: true })).default([])});
+ 
+}).extend({categories: z.array(categorySchema.pick({ id: true })).default([]),  useCategorize: z.boolean().default(false) });
 
 export const postFilterSchema = z.object({
   categoryId: z.array(z.number().int().positive()).default([]),

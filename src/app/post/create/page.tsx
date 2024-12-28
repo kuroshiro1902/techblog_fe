@@ -78,6 +78,7 @@ const SelectThumbnailBtn = ({ onSuccess }: { onSuccess: (url: string) => void })
 
 function PostCreatePage() {
   const [categories, setCategories] = useState<TCategory[]>([]);
+  const [useCategorize, setUseCategorize] = useState(false);
   const [auth, setAuth] = useState(false);
   const [thumbnailUrl, setThumbnailUrl] = useState('');
   const executeWithLoading = useLoadingStore((s) => s.executeWithLoading);
@@ -91,6 +92,7 @@ function PostCreatePage() {
       thumbnailUrl: '',
       categories: [],
       isPublished: true,
+      useCategorize: false,
     },
   });
 
@@ -186,6 +188,7 @@ function PostCreatePage() {
                         value={field.value}
                         onChange={field.onChange}
                         placeholder='Viết nội dung bài viết...'
+                        className='!font-sans'
                         enableImage
                         modules={{
                           toolbar: {
@@ -220,6 +223,40 @@ function PostCreatePage() {
                 )}
               />
 
+              <Controller
+                name='useCategorize'
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <div className='flex items-center gap-2'>
+                        <Input
+                          type='checkbox'
+                          checked={field.value}
+                          onChange={(e) => {
+                            field.onChange(e.target.checked);
+                            setUseCategorize(e.target.checked);
+                          }}
+                          className='h-[20px] w-[20px]'
+                        />
+                        <FormLabel className='ml-2'>Tự động phân loại thể loại ✨</FormLabel>
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {form.getValues('useCategorize') && (
+                <p className='text-orange-500 text-sm'>
+                  <i>
+                    Hệ thống sẽ tự phân loại thể loại dựa trên nội dung bài viết sau khi bài
+                    viết được xuất bản. Các thể loại được lựa chọn thủ công sẽ không được áp
+                    dụng!
+                  </i>
+                </p>
+              )}
+
               <FormField
                 control={form.control}
                 name='categories'
@@ -239,7 +276,7 @@ function PostCreatePage() {
                   </FormItem>
                 )}
               />
-
+              <hr />
               <Controller
                 name='isPublished'
                 control={form.control}

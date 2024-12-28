@@ -32,7 +32,8 @@ export const PostService = Object.freeze({
     }
   },
   createPost: async (post: z.input<typeof createPostSchema>) => {
-    const res = await API.post<TPost>(path('/create'), { data: post });
+    const {useCategorize, ...post$} = post;
+    const res = await API.post<TPost>(path('/create'), { data: post$, useCategorize });
     const { isSuccess, data, message } = res.data;
     if (isSuccess && data) {
       return data;
@@ -253,12 +254,29 @@ export const PostService = Object.freeze({
   },
 
   getPostById: async (id: number): Promise<TPost> => {
-    const response = await API.get<TPost>(`/posts/${id}`);
+    const response = await API.get<TPost>(`/${id}`);
     const { isSuccess, data, message } = response.data; 
     if (isSuccess && data) {
       return data;
     } else {
       throw new Error(message);
+    }
+  },
+
+  getDescription: async (id: number): Promise<string> => {
+    try {
+      const response = await ServerSideAPI.get<{description: string}>(path('/description/'+id));
+      const { isSuccess, data, message } = response.data; 
+      console.log({ isSuccess, data, message });
+      
+      if (isSuccess && data?.description) {
+        return data.description;
+      } else {
+        // throw new Error(message);
+        return 'Có lỗi xảy ra! Vui lòng thử lại sau.'
+      }
+    } catch (error) {
+      return 'Có lỗi xảy ra! Vui lòng thử lại sau.'
     }
   }
 });
