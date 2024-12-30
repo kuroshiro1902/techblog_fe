@@ -8,7 +8,7 @@ import DynamicContent from '@/components/common/dynamic-content';
 import { useCallback, useState } from 'react';
 import s from './styles.module.scss';
 import { Button } from '@/components/ui/button';
-import { ThumbsUp, ThumbsDown, Pencil, InfoIcon } from 'lucide-react';
+import { ThumbsUp, ThumbsDown, Pencil, InfoIcon, Smile, Frown, Meh } from 'lucide-react';
 import { ReplyForm } from './reply-form';
 import { PostService } from '@/services/post/post.service';
 import { useLoadingStore } from '@/stores/loading.store';
@@ -133,18 +133,19 @@ function SingleComment({
             ? 'không thích'
             : 'trung tính với'
         } bài viết này (Được đánh giá bởi AI).`}
-        className={cn(`absolute left-0 top-0`, {
-          'bg-green-500/70': comment.impScore === ERatingScore.LIKE,
-          'bg-red-500/70': comment.impScore === ERatingScore.DISLIKE,
-          'bg-gray-500/70': comment.impScore === null || comment.impScore === ERatingScore.NONE,
-        })}
+        className={cn(`absolute bottom-1 right-1`)}
         data-role='comment-sentiment'
-        style={{
-          width: 12,
-          height: 12,
-          clipPath: 'polygon(0% 0%, 0% 100%, 100% 0%)',
-        }}
-      />
+      >
+        {comment.impScore === ERatingScore.LIKE && (
+          <Smile size={16} className='text-green-500/80' />
+        )}
+        {comment.impScore === ERatingScore.DISLIKE && (
+          <Frown size={16} className='text-red-500/70' />
+        )}
+        {comment.impScore === ERatingScore.NONE && (
+          <Meh size={16} className='text-gray-500/70' />
+        )}
+      </div>
       <div className='flex items-center justify-between'>
         <div className='flex items-center gap-2'>
           <Link

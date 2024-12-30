@@ -12,7 +12,7 @@ function Header() {
     <React.Fragment>
       <header className='bg-background fixed top-0 inset-x-0 z-[9998] shadow-lg shadow-popover'>
         <div className='container mx-auto flex h-16 items-center justify-between px-4'>
-          <Logo />
+          <Logo className='hidden md:flex' />
           <MainNav />
           <div className='flex items-center gap-2'>
             <NotificationList />

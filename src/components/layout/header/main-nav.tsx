@@ -5,6 +5,7 @@ import { SlidePanel } from '@/components/common/slide-panel';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { ChevronDown, MenuIcon } from 'lucide-react';
+import { SearchBtn } from './components/search-btn';
 
 const mainNavItems = [
   { title: 'Trang chủ', href: ROUTE.HOME },
@@ -55,6 +56,9 @@ export function MainNav() {
             )}
           </li>
         ))}
+        <li className='relative group hidden lg:list-item'>
+          <SearchBtn />
+        </li>
       </ul>
 
       {/* Mobile Navigation */}

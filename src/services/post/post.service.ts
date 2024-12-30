@@ -42,7 +42,8 @@ export const PostService = Object.freeze({
     }
   },
   updatePost: async (postId: number, post: z.input<typeof createPostSchema>) => {
-    const res = await API.put<TPost>(path('/update/' + postId), { data: post });
+    const {useCategorize, ...post$} = post;
+    const res = await API.put<TPost>(path('/update/' + postId), { data: post$ });
     const { isSuccess, data, message } = res.data;
     if (isSuccess && data) {
       return data;
@@ -277,6 +278,15 @@ export const PostService = Object.freeze({
       }
     } catch (error) {
       return 'Có lỗi xảy ra! Vui lòng thử lại sau.'
+    }
+  },
+  getRecommended: async (pageSize = 4) => {
+    const res = await API.get<TFilterResponse<TPost>>(path('/recommended'),{pageSize});
+    const { isSuccess, data, message } = res.data;
+    if (isSuccess && data?.data) {
+      return data.data;
+    } else {
+      throw new Error(message);
     }
   }
 });
