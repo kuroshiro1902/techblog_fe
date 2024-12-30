@@ -281,10 +281,19 @@ export const PostService = Object.freeze({
     }
   },
   getRecommended: async (pageSize = 4) => {
-    const res = await API.get<TFilterResponse<TPost>>(path('/recommended'),{pageSize});
+    const res = await API.get<TPost[]>(path('/recommended'),{pageSize});
     const { isSuccess, data, message } = res.data;
-    if (isSuccess && data?.data) {
-      return data.data;
+    if (isSuccess && data) {
+      return data;
+    } else {
+      throw new Error(message);
+    }
+  },
+  getSimilar: async (postId: number, pageSize = 4) => {
+    const res = await ServerSideAPI.get<TPost[]>(path('/similar'),{postId, pageSize});
+    const { isSuccess, data, message } = res.data;
+    if (isSuccess && data) {
+      return data;
     } else {
       throw new Error(message);
     }

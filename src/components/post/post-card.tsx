@@ -15,9 +15,13 @@ import { Button } from '../ui/button';
 import { formatDate } from 'date-fns';
 import { EyeIcon, StarIcon, ThumbsDownIcon, ThumbsUpIcon } from 'lucide-react';
 import { Badge } from '../ui/badge';
+import { cn } from '@/lib/utils';
+import { ClassValue } from 'clsx';
 
 export interface PostCardProps {
   post?: TPost;
+  hideImage?: boolean;
+  className?: ClassValue;
 }
 
 const LinkPost = ({ post, children }: any) => (
@@ -31,9 +35,11 @@ const LinkPost = ({ post, children }: any) => (
   </Link>
 );
 
-function PostCard({ post }: PostCardProps) {
+function PostCard({ post, hideImage, className }: PostCardProps) {
   return (
-    <Card className='bg-card border-border h-full flex flex-col justify-between'>
+    <Card
+      className={cn('bg-card border-border h-full flex flex-col justify-between', className)}
+    >
       <CardHeader className='pb-1'>
         <CardTitle className='text-xl'>
           <LinkPost post={post}>{post?.title}</LinkPost>
@@ -55,7 +61,7 @@ function PostCard({ post }: PostCardProps) {
             title={post?.author.name}
             href={`/user/${post?.author?.id}`}
             target='_blank'
-            className='pt-1 underline font-bold flex items-center gap-2'
+            className='pt-1 pb-2 underline font-bold flex items-center gap-2'
           >
             <Image
               className='w-6 aspect-[1/1] rounded-full'
@@ -67,19 +73,21 @@ function PostCard({ post }: PostCardProps) {
             />
             {post?.author?.name?.substring(0, 30)}
           </Link>
-          <span className='block pt-2 pb-1'>
-            <LinkPost post={post}>
-              <Image
-                src={post?.thumbnailUrl || defaultThumbnail}
-                alt={post?.title || 'Bài viết không có tiêu đề'}
-                className='w-full aspect-[1/0.6] rounded-lg'
-                width={600}
-                height={600}
-                quality={post?.thumbnailUrl ? 85 : 30}
-              />
-            </LinkPost>
-          </span>
-          <span className='flex gap-3 flex-wrap items-center'>
+          {!hideImage && (
+            <span className='block'>
+              <LinkPost post={post}>
+                <Image
+                  src={post?.thumbnailUrl || defaultThumbnail}
+                  alt={post?.title || 'Bài viết không có tiêu đề'}
+                  className='w-full aspect-[1/0.6] rounded-lg'
+                  width={600}
+                  height={600}
+                  quality={post?.thumbnailUrl ? 85 : 30}
+                />
+              </LinkPost>
+            </span>
+          )}
+          <span className='pt-1 flex gap-3 flex-wrap items-center'>
             <small
               className='inline-flex gap-1 items-center'
               title={(post?.views || 0) + ' lượt xem'}

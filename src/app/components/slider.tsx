@@ -12,7 +12,7 @@ function Slider() {
     <div className='flex justify-center overflow-hidden relative z-[1]'>
       <Carousel className='relative max-w-3xl flex-1'>
         <CarouselContent className='rounded-lg'>
-          {[2, 1, 3].map((i) => (
+          {[3, 2, 1, 4].map((i) => (
             <CarouselItem key={i} className='flex justify-center items-center rounded-lg'>
               <div className='relative h-[360px] aspect-[16/9] max-w-full overflow-hidden rounded-lg'>
                 <Image

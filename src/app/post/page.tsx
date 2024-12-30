@@ -8,6 +8,7 @@ import { ArrowRight, ChevronRightIcon, HomeIcon } from 'lucide-react';
 import { Metadata } from 'next';
 import Link from 'next/link';
 import Recommended from './recommended';
+import { Logo } from '@/components/layout/logo';
 
 export async function generateMetadata({
   searchParams,
@@ -34,7 +35,7 @@ export async function generateMetadata({
 export default async function PostPage({ searchParams }: { searchParams?: ISearchPostParams }) {
   const postData: TFilterResponse<TPost> = {
     data: [],
-    pageInfo: { hasNextPage: false, pageIndex: 1, pageSize: 16, totalPage: 1 },
+    pageInfo: { hasNextPage: false, pageIndex: 1, pageSize: 6, totalPage: 1 },
   };
 
   // Parse and validate search parameters
@@ -71,7 +72,15 @@ export default async function PostPage({ searchParams }: { searchParams?: ISearc
   return (
     <>
       {/* <main className='max-w-screen-lg m-auto flex flex-col justify-between lg:p-8 p-4'> */}
-      <main className='max-w-screen-2xl m-auto flex flex-col justify-between lg:p-8 p-4'>
+      <main className='max-w-[1400px] m-auto flex flex-col justify-between lg:p-8 p-4'>
+        <div className='flex-col place-items-center bg-primary my-4 p-4 text-background relative'>
+          <div
+            className='absolute inset-0 z-10 opacity-20'
+            style={{ backgroundImage: 'url(/img3.webp)', backgroundPosition: 'center' }}
+          ></div>
+          <Logo className='text-inherit text-4xl' />
+          <h4>Nền tảng chia sẻ kiến thức công nghệ trực tuyến!</h4>
+        </div>
         <p className='flex gap-2 items-center border-b mb-4'>
           <span className='text-primary flex items-center gap-1'>
             <HomeIcon size={16} />
@@ -82,28 +91,27 @@ export default async function PostPage({ searchParams }: { searchParams?: ISearc
           </span>
           <span>Danh sách bài viết</span>
         </p>
-        <div className='flex flex-wrap gap-4'>
+        <div className='flex flex-wrap justify-center gap-4 lg:gap-8'>
           <div className='main flex-1'>
             <h3 className='text-primary'>Khám phá những bài viết hay.</h3>
             <p className='mb-4'>Bạn có thể tìm kiếm bài viết theo tên bài viết, chủ đề, ...</p>
             <SearchPostForm defaultValue={searchParams ?? {}} />
             <div className='py-4'></div>
-            <ul className='grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 gap-4 justify-items-center items-center'>
+            <ul className='grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-4 justify-items-center items-center'>
               {postData?.data.map((post, i) => (
                 <li key={i} className='max-w-[300px] w-full h-full'>
-                  <PostCard post={post} />
+                  <PostCard post={post} className='bg-foreground/5' />
                 </li>
               ))}
             </ul>
+            {/* Pagination */}
+            <div className='mt-4 flex justify-center'>
+              <Pagination totalPage={postData.pageInfo.totalPage} />
+            </div>
           </div>
-          {/* <div className='rounded shadow p-2'>
+          <div className='rounded shadow p-2 self-start'>
             <Recommended />
-          </div> */}
-        </div>
-
-        {/* Pagination */}
-        <div className='mt-4 flex justify-center'>
-          <Pagination totalPage={postData.pageInfo.totalPage} />
+          </div>
         </div>
       </main>
     </>

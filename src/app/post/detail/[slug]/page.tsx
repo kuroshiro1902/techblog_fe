@@ -17,6 +17,7 @@ import { EyeIcon, ThumbsDownIcon, ThumbsUpIcon } from 'lucide-react';
 import 'highlight.js/styles/github.min.css';
 import AddToFavoriteButton from './components/add-to-favorite';
 import DescriptionButton from './components/descriptionButton';
+import SimilarPosts from './components/similar-posts';
 
 export async function generateMetadata({
   params,
@@ -144,6 +145,9 @@ async function PostDetailPage({ params }: { params: { slug: string } }) {
         <div className='border-t-secondary border-t-2 py-2 my-2 flex flex-wrap justify-between gap-4 items-end'>
           <Rating postId={post.id} />
           <AddToFavoriteButton postId={post.id} />
+        </div>
+        <div className='my-2 py-2'>
+          <SimilarPosts postId={post.id} />
         </div>
         <CommentSection postId={post.id} />
         <ScrollToTop />
