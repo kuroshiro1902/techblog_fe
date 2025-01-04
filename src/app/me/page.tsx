@@ -18,11 +18,14 @@ import RatingHistory from './components/ratings-history';
 import CommentHistory from './components/comments-history';
 import { PostService } from '@/services/post/post.service';
 import { UserCard } from './components/user-card';
+import useAuthStore from '@/stores/auth.store';
+import Link from 'next/link';
 
 function MePage() {
   const [isOpenForm, setIsOpenForm] = useState(false);
   const [isOpenPasswordForm, setIsOpenPasswordForm] = useState(false);
   const [meProfile, setMeProfile] = useState<IUser | null>();
+  const user = useAuthStore((s) => s.user);
   const [followers, setFollowers] = useState<IUser[]>([]);
   const [following, setFollowing] = useState<IUser[]>([]);
   const [error, setError] = useState('');
@@ -57,6 +60,11 @@ function MePage() {
     };
   }, []);
   useEffect(() => {
+    if (!user?.id) {
+      setError('Vui lòng đăng nhập để thực hiện chức năng này!');
+      setMeProfile(null);
+      return;
+    }
     UserService.getMe()
       .then(({ data, message }) => {
         setMeProfile(data ?? null);
@@ -78,13 +86,15 @@ function MePage() {
         setError(getApiErrorMessage(err));
         setMeProfile(null);
       });
-  }, []);
+  }, [user?.id]);
   if (meProfile === null) {
     return (
-      <main className='max-w-screen-lg m-auto flex flex-col justify-between lg:p-8 p-4'>
+      <main className='max-w-screen-lg m-auto lg:p-8 p-4'>
         <title>Tech Blog - Trang cá nhân</title>
         <p>{error ?? 'CANNOT GET YOUR PROFILE! Try again later.'}</p>
-        <a href={ROUTE.HOME}>Home</a>
+        <Link href={ROUTE.LOGIN} className='mt-2 inline-block'>
+          <Button variant='outline'>Đăng nhập</Button>
+        </Link>
       </main>
     );
   }

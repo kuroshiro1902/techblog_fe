@@ -18,6 +18,7 @@ import 'highlight.js/styles/github.min.css';
 import AddToFavoriteButton from './components/add-to-favorite';
 import DescriptionButton from './components/descriptionButton';
 import SimilarPosts from './components/similar-posts';
+import RecommendPosts from './components/recommend-posts';
 
 export async function generateMetadata({
   params,
@@ -148,6 +149,9 @@ async function PostDetailPage({ params }: { params: { slug: string } }) {
         </div>
         <div className='my-2 py-2'>
           <SimilarPosts postId={post.id} />
+        </div>
+        <div className='my-2 py-2'>
+          <RecommendPosts />
         </div>
         <CommentSection postId={post.id} />
         <ScrollToTop />

@@ -125,7 +125,7 @@ function SingleComment({
       role='comment'
       className='border border-gray-200 p-2 mt-2 relative'
     >
-      <div
+      {/* <div
         title={`${comment.user.name} ${
           comment.impScore === ERatingScore.LIKE
             ? 'thích'
@@ -145,25 +145,53 @@ function SingleComment({
         {comment.impScore === ERatingScore.NONE && (
           <Meh size={16} className='text-gray-500/70' />
         )}
-      </div>
+      </div> */}
       <div className='flex items-center justify-between'>
         <div className='flex items-center gap-2'>
-          <Link
-            title={comment?.user.name}
-            href={`/user/${comment?.user?.id}`}
-            target='_blank'
-            className='pt-1 flex items-center gap-2'
-          >
-            <Image
-              className='w-6 aspect-[1/1] rounded-full'
-              src={comment?.user.avatarUrl ?? defaultAvt}
-              alt={comment?.user.name ?? ''}
-              width={24}
-              height={24}
-              quality={50}
-            />
-            <CommentHeader comment={comment} />
-          </Link>
+          <div className='pt-1 flex items-center gap-2'>
+            <Link
+              title={comment?.user.name}
+              href={`/user/${comment?.user?.id}`}
+              target='_blank'
+            >
+              <Image
+                className='w-6 aspect-[1/1] rounded-full'
+                src={comment?.user.avatarUrl ?? defaultAvt}
+                alt={comment?.user.name ?? ''}
+                width={24}
+                height={24}
+                quality={50}
+              />
+            </Link>
+            <Link
+              title={comment?.user.name}
+              href={`/user/${comment?.user?.id}`}
+              target='_blank'
+            >
+              <CommentHeader comment={comment} />
+            </Link>
+            <div
+              title={`${comment.user.name} ${
+                comment.impScore === ERatingScore.LIKE
+                  ? 'thích'
+                  : comment.impScore === ERatingScore.DISLIKE
+                  ? 'không thích'
+                  : 'trung tính với'
+              } bài viết này (Được đánh giá bởi AI).`}
+              // className={cn(`absolute bottom-1 right-1`)}
+              data-role='comment-sentiment'
+            >
+              {comment.impScore === ERatingScore.LIKE && (
+                <Smile size={16} className='text-green-500/80' />
+              )}
+              {comment.impScore === ERatingScore.DISLIKE && (
+                <Frown size={16} className='text-red-500/70' />
+              )}
+              {comment.impScore === ERatingScore.NONE && (
+                <Meh size={16} className='text-gray-500/70' />
+              )}
+            </div>
+          </div>
         </div>
         {isOwnComment && !isEditing && (
           <div>

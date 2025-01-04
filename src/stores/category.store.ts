@@ -14,10 +14,10 @@ interface CategoryData {
 export const useCategoryStore = create<CategoryData>((set, get, k) => ({
   categories: [],
   isFetchedCategory: false,
-  fetchCategories: async () => {
+  fetchCategories: async (pageSize?: number, pageIndex?: number) => {
     const {isFetchedCategory, categories} = get();
     if (!isFetchedCategory) {
-      return await CategoryService.filterCategories({}).then(({data: categories})=>{
+      return await CategoryService.filterCategories({pageSize: pageSize ?? 48}).then(({data: categories})=>{
         set({ categories, isFetchedCategory: true });
         return categories;
       }).catch((err)=>{

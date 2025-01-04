@@ -16,13 +16,19 @@ import FormInput from '@/components/form/formInput';
 import dayjs from 'dayjs';
 
 const { name, email, password, username } = userSchema.shape;
-const signupFormSchema = z.object({
-  name,
-  username,
-  password,
-  dob: z.string().optional(),
-  email,
-});
+const signupFormSchema = z
+  .object({
+    name,
+    username,
+    password,
+    confirmPassword: z.string(),
+    dob: z.string().optional(),
+    email,
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    path: ['confirmPassword'], // Đường dẫn tới trường lỗi
+    message: 'Mật khẩu xác nhận không khớp!', // Thông báo lỗi
+  });
 
 function SignupPage() {
   const { toast } = useToast();
@@ -35,6 +41,7 @@ function SignupPage() {
       name: '',
       username: '',
       password: '',
+      confirmPassword: '',
       dob: '',
       email: '',
     },
@@ -66,16 +73,11 @@ function SignupPage() {
   };
 
   return (
-    <div className='max-w-md mx-auto p-4' key={'' + Math.random()}>
+    <div className='max-w-md mx-auto p-4'>
       <h2 className='text-2xl font-bold mb-6'>Đăng Ký</h2>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
-          <FormInput
-            control={form.control}
-            name='name'
-            label='Họ tên'
-            placeholder='Họ tên'
-          />
+          <FormInput control={form.control} name='name' label='Họ tên' placeholder='Họ tên' />
           <FormInput
             control={form.control}
             name='username'
@@ -87,6 +89,14 @@ function SignupPage() {
             name='password'
             label='Mật khẩu'
             placeholder='Mật khẩu'
+            type='password'
+            autoComplete='current-password'
+          />
+          <FormInput
+            control={form.control}
+            name='confirmPassword'
+            label='Xác nhận mật khẩu'
+            placeholder='Xác nhận mật khẩu'
             type='password'
           />
           <FormInput

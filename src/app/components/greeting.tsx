@@ -8,11 +8,13 @@ import { ArrowRightCircleIcon } from 'lucide-react';
 
 function Greeting() {
   const user = useAuthStore((s) => s.user);
+  const name = user?.name.split(/\s+/g);
   return (
     <div className='max-w-screen-md m-auto z-[1]'>
       <p className='text-5xl font-semibold'>
-        Chào mừng {user?.name ? <b className='text-linear-primary'>{user.name}</b> : 'bạn'} đến
-        với <Logo className='inline-flex text-5xl' iconSize={48} />!
+        Chào mừng{' '}
+        {name ? <b className='text-linear-primary'>{name[name.length - 1]}</b> : 'bạn'} đến với{' '}
+        <Logo className='inline-flex text-5xl' iconSize={48} />!
       </p>
       <p className='text-lg py-4 my-4 max-w-screen-md'>
         Nơi kết nối các lập trình viên, chia sẻ kiến thức, ý tưởng, và cùng nhau phát triển.

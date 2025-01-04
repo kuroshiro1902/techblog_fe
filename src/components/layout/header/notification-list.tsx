@@ -10,6 +10,8 @@ import { PostService } from '@/services/post/post.service';
 import { useToast } from '@/components/hooks/use-toast';
 import Notification from '@/components/notification/notification';
 import { ENotificationEvent, useSocket } from '@/stores/socket.store';
+
+const pageSize = 8;
 const NotificationList = () => {
   const { toast } = useToast();
   const { user } = useAuthStore();
@@ -64,7 +66,7 @@ const NotificationList = () => {
 
   useEffect(() => {
     if (user) {
-      NotificationService.getOwnNotifications({ pageIndex: 1, pageSize: 8 }).then((res) => {
+      NotificationService.getOwnNotifications({ pageIndex: 1, pageSize }).then((res) => {
         if (res) {
           setNotifications(res.data);
         }
@@ -79,13 +81,13 @@ const NotificationList = () => {
       };
       // Lắng nghe sự kiện thông báo từ server
       const onNewNotification = (data: TNotification) => {
-        setNotifications((prev) => {
-          const p = [...prev];
-          p.pop();
-          console.log('socket nhận noti: ', socket?.id);
-          return [data, ...p];
-        });
-        NotificationService.getOwnNotifications({ pageIndex: 1, pageSize: 8 }).then((res) => {
+        // setNotifications((prev) => {
+        //   const notis = [...prev];
+        //   const notiIdSet = Array.from(new Set(notis.map(n=>n.id).sort((a,b)=>b-a))).slice(0, pageSize-1);
+        //   console.log('socket nhận noti: ', socket?.id);
+        //   return [data, ...notis.filter(n=>)];
+        // });
+        NotificationService.getOwnNotifications({ pageIndex: 1, pageSize }).then((res) => {
           if (res) {
             setNotifications(res.data);
           }

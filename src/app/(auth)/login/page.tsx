@@ -86,6 +86,7 @@ function LoginPage() {
             name='password'
             placeholder='Mật khẩu ít nhất 6 ký tự.'
             type='password'
+            autoComplete='current-password'
           />
           <FormMessage>{submitMessage}</FormMessage>
           <Button disabled={isSubmitting} type='submit'>

@@ -33,6 +33,7 @@ import { Input } from '@/components/ui/input';
 import { TPostRevision } from '@/models/post-revision.model';
 import RevisionHistory from './components/revision-history';
 import 'highlight.js/styles/github.min.css';
+import { useCategoryStore } from '@/stores/category.store';
 
 const SelectThumbnailBtn = ({ onSuccess }: { onSuccess: (url: string) => void }) => {
   return (
@@ -85,7 +86,7 @@ function PostUpdatePage({ params }: { params: { slug: string } }) {
   const [defaultPost, setDefaultPost] = useState<TPost>();
   const user = useAuthStore((s) => s.user);
   const [auth, setAuth] = useState(false);
-  const [categories, setCategories] = useState<TCategory[]>([]);
+  const { categories, fetchCategories } = useCategoryStore();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const executeWithLoading = useLoadingStore((s) => s.executeWithLoading);
   const [thumbnailUrl, setThumbnailUrl] = useState('');
@@ -147,14 +148,7 @@ function PostUpdatePage({ params }: { params: { slug: string } }) {
 
   useEffect(() => {
     if (auth) {
-      CategoryService.filterCategories({})
-        .then((res) => {
-          setCategories(res.data);
-        })
-        .catch((err) => {
-          toast({ variant: 'destructive', title: getApiErrorMessage(err) });
-          setCategories([]);
-        });
+      fetchCategories();
 
       if (params.slug) {
         PostService.getDetailPost({ slug: params.slug }, true)
@@ -173,7 +167,7 @@ function PostUpdatePage({ params }: { params: { slug: string } }) {
           });
       }
     }
-  }, [auth, params.slug, router, setFormValues, toast, user?.id]);
+  }, [auth, params.slug, router, setFormValues, toast, user?.id, fetchCategories]);
 
   const handleSelectRevision = async (revision: TPostRevision) => {
     const rev = await PostService.restorePostRevisions({ revisionId: revision.id });

@@ -91,13 +91,22 @@ function NotificationPage() {
 
     // Lắng nghe sự kiện thông báo từ server
     const onNewNotification = (data: TNotification) => {
-      setNotifications((prev) => {
-        const p = [...prev];
-        p.pop();
-        console.log('socket nhận noti: ', socket?.id);
+      // setNotifications((prev) => {
+      //   const p = [...prev];
+      //   p.pop();
+      //   console.log('socket nhận noti: ', socket?.id);
 
-        return [data, ...p];
-      });
+      //   return [data, ...p];
+      // });
+      if (user) {
+        NotificationService.getOwnNotifications({ pageIndex: 1, pageSize: 8 }).then((res) => {
+          if (res) {
+            setNotifications(res.data);
+            setHasNextPage(res?.pageInfo?.hasNextPage);
+            setPageIndex(1);
+          }
+        });
+      }
     };
 
     if (user) {

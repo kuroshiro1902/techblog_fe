@@ -30,6 +30,7 @@ import { TCategory } from '@/models/category.model';
 import { CategoryService } from '@/services/category/category.service';
 import { Input } from '@/components/ui/input';
 import 'highlight.js/styles/github.min.css';
+import { useCategoryStore } from '@/stores/category.store';
 
 const SelectThumbnailBtn = ({ onSuccess }: { onSuccess: (url: string) => void }) => {
   return (
@@ -77,8 +78,7 @@ const SelectThumbnailBtn = ({ onSuccess }: { onSuccess: (url: string) => void })
 };
 
 function PostCreatePage() {
-  const [categories, setCategories] = useState<TCategory[]>([]);
-  const [useCategorize, setUseCategorize] = useState(false);
+  const { categories, fetchCategories } = useCategoryStore();
   const [auth, setAuth] = useState(false);
   const [thumbnailUrl, setThumbnailUrl] = useState('');
   const executeWithLoading = useLoadingStore((s) => s.executeWithLoading);
@@ -122,17 +122,18 @@ function PostCreatePage() {
   }, [thumbnailUrl, form]);
 
   useEffect(() => {
-    if (auth) {
-      CategoryService.filterCategories({})
-        .then((res) => {
-          setCategories(res.data);
-        })
-        .catch((err) => {
-          toast({ variant: 'destructive', title: getApiErrorMessage(err) });
-          setCategories([]);
-        });
-    }
-  }, [auth]);
+    // if (auth) {
+    //   CategoryService.filterCategories({})
+    //     .then((res) => {
+    //       setCategories(res.data);
+    //     })
+    //     .catch((err) => {
+    //       toast({ variant: 'destructive', title: getApiErrorMessage(err) });
+    //       setCategories([]);
+    //     });
+    // }
+    fetchCategories();
+  }, [auth, fetchCategories]);
 
   return (
     <div className='max-w-screen-lg m-auto flex flex-col justify-between lg:p-8 p-4'>
@@ -235,7 +236,6 @@ function PostCreatePage() {
                           checked={field.value}
                           onChange={(e) => {
                             field.onChange(e.target.checked);
-                            setUseCategorize(e.target.checked);
                           }}
                           className='h-[20px] w-[20px]'
                         />
