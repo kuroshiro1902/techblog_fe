@@ -47,7 +47,7 @@ function Footer() {
                   target='_blank'
                   href='/post?categoryId=3'
                 >
-                  Fullstack
+                  Nodejs
                 </a>
               </p>
             </div>

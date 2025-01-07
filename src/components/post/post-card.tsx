@@ -22,6 +22,7 @@ export interface PostCardProps {
   post?: TPost;
   hideImage?: boolean;
   className?: ClassValue;
+  hideDetail?: boolean;
 }
 
 const LinkPost = ({ post, children }: any) => (
@@ -35,7 +36,7 @@ const LinkPost = ({ post, children }: any) => (
   </Link>
 );
 
-function PostCard({ post, hideImage, className }: PostCardProps) {
+function PostCard({ post, hideImage, hideDetail, className }: PostCardProps) {
   return (
     <Card
       className={cn('bg-card border-border h-full flex flex-col justify-between', className)}
@@ -57,22 +58,24 @@ function PostCard({ post, hideImage, className }: PostCardProps) {
           <time className='text-[12px] pt-[2px]'>
             {post?.createdAt ? `${formatDate(post.createdAt, 'HH:mm dd/MM/yyyy')}` : ''}
           </time>
-          <Link
-            title={post?.author.name}
-            href={`/user/${post?.author?.id}`}
-            target='_blank'
-            className='pt-1 pb-2 underline font-bold flex items-center gap-2'
-          >
-            <Image
-              className='w-6 aspect-[1/1] rounded-full'
-              src={post?.author.avatarUrl ?? defaultAvt}
-              alt={post?.author.name ?? ''}
-              width={24}
-              height={24}
-              quality={50}
-            />
-            {post?.author?.name?.substring(0, 30)}
-          </Link>
+          {!hideDetail && (
+            <Link
+              title={post?.author.name}
+              href={`/user/${post?.author?.id}`}
+              target='_blank'
+              className='pt-1 pb-2 underline font-bold flex items-center gap-2'
+            >
+              <Image
+                className='w-6 aspect-[1/1] rounded-full'
+                src={post?.author.avatarUrl ?? defaultAvt}
+                alt={post?.author.name ?? ''}
+                width={24}
+                height={24}
+                quality={50}
+              />
+              {post?.author?.name?.substring(0, 30)}
+            </Link>
+          )}
           {!hideImage && (
             <span className='block'>
               <LinkPost post={post}>
@@ -87,26 +90,28 @@ function PostCard({ post, hideImage, className }: PostCardProps) {
               </LinkPost>
             </span>
           )}
-          <span className='pt-1 flex gap-3 flex-wrap items-center'>
-            <small
-              className='inline-flex gap-1 items-center'
-              title={(post?.views || 0) + ' lượt xem'}
-            >
-              {post?.views} <EyeIcon className='inline' size={14} />
-            </small>
-            <small
-              className='inline-flex gap-1 items-center'
-              title={(post?.rating?.likes || 0) + ' lượt thích'}
-            >
-              {post?.rating?.likes || 0} <ThumbsUpIcon className='inline' size={12} />
-            </small>
-            <small
-              className='inline-flex gap-1 items-center'
-              title={(post?.rating?.dislikes || 0) + ' lượt không thích'}
-            >
-              {post?.rating?.dislikes || 0} <ThumbsDownIcon className='inline' size={12} />
-            </small>
-          </span>
+          {!hideDetail && (
+            <span className='pt-1 flex gap-3 flex-wrap items-center'>
+              <small
+                className='inline-flex gap-1 items-center'
+                title={(post?.views || 0) + ' lượt xem'}
+              >
+                {post?.views} <EyeIcon className='inline' size={14} />
+              </small>
+              <small
+                className='inline-flex gap-1 items-center'
+                title={(post?.rating?.likes || 0) + ' lượt thích'}
+              >
+                {post?.rating?.likes || 0} <ThumbsUpIcon className='inline' size={12} />
+              </small>
+              <small
+                className='inline-flex gap-1 items-center'
+                title={(post?.rating?.dislikes || 0) + ' lượt không thích'}
+              >
+                {post?.rating?.dislikes || 0} <ThumbsDownIcon className='inline' size={12} />
+              </small>
+            </span>
+          )}
         </CardDescription>
         <LinkPost post={post}>
           <Button className='mt-3 float-right'>Xem chi tiết</Button>

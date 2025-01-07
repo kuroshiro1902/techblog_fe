@@ -29,26 +29,26 @@ export default function CommentHistory() {
       return <p key={comment.id}>Bài viết này đã bị xóa.</p>;
     }
     return (
-      <p key={comment.id}>
+      <p key={comment.id} className='border-b py-1'>
         <a
           target='_blank'
           href={'/post/detail/' + comment.post?.slug}
-          className='hover:underline flex gap-2 items-center'
+          className='hover:underline text-ellipsis line-clamp-2'
         >
           {comment.updatedAt && (
-            <time className='text-xs'>
+            <time className='text-xs mr-2 opacity-75'>
               <i>{formatDate(comment.updatedAt, 'HH:mm dd/MM/yyyy')}</i>
             </time>
           )}
-          <span className='flex'>
-            Bạn đã bình luận &quot;
-            <b className='text-ellipsis line-clamp-1'>
+          <span>
+            Bạn đã bình luận: &quot;
+            <b>
               {
                 new DOMParser().parseFromString(comment.content ?? '', 'text/html').body
                   .textContent
               }
             </b>
-            &quot;.
+            &quot;
           </span>
         </a>
       </p>

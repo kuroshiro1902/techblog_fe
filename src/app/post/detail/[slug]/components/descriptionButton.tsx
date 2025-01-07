@@ -15,8 +15,8 @@ function DescriptionButton({ postId }: { postId: number }) {
   return (
     <div className='p-4'>
       <Button
-        className='flex items-center w-full justify-start rounded-none'
-        variant='outline'
+        className='flex items-center w-full justify-start rounded-none text-foreground'
+        variant='secondary'
         onClick={() => {
           if (!isOpen) {
             getDescription();
@@ -34,7 +34,7 @@ function DescriptionButton({ postId }: { postId: number }) {
         </span>
       </Button>
       {isOpen && (
-        <div className='border p-2'>
+        <div className='border p-2 bg-foreground/5'>
           {description ? (
             <div>
               <p className='text-justify'>{description}</p>

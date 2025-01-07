@@ -29,14 +29,14 @@ export default function RatingHistory() {
       return <p key={rating.id}>Bài viết này đã bị xóa.</p>;
     }
     return (
-      <p key={rating.id}>
+      <p key={rating.id} className='border-b py-1'>
         <a
           target='_blank'
           href={'/post/detail/' + rating.post?.slug}
-          className='hover:underline'
+          className='hover:underline text-ellipsis line-clamp-2'
         >
           {rating.updatedAt && (
-            <time className='text-xs mr-2'>
+            <time className='text-xs mr-2 opacity-75'>
               <i>{formatDate(rating.updatedAt, 'HH:mm dd/MM/yyyy')}</i>
             </time>
           )}

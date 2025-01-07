@@ -14,7 +14,7 @@ const mainNavItems = [
     items: [
       { title: 'Frontend', href: '/post?categoryId=1' },
       { title: 'Backend', href: '/post?categoryId=2' },
-      { title: 'Fullstack', href: '/post?categoryId=3' },
+      { title: 'Nodejs', href: '/post?categoryId=3' },
     ],
   },
   { title: 'Bài viết', href: '/post' },

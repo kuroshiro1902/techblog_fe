@@ -20,6 +20,8 @@ import { PostService } from '@/services/post/post.service';
 import { UserCard } from './components/user-card';
 import useAuthStore from '@/stores/auth.store';
 import Link from 'next/link';
+import Recommended from './components/recommended';
+import { Logo } from '@/components/layout/logo';
 
 function MePage() {
   const [isOpenForm, setIsOpenForm] = useState(false);
@@ -52,6 +54,15 @@ function MePage() {
       pageSize,
     });
 
+    return {
+      data: response.data,
+      currentPage: response.pageInfo.pageIndex,
+      pageSize: response.pageInfo.pageSize,
+      totalPages: response.pageInfo.totalPage,
+    };
+  }, []);
+  const fetchViewHistory = useCallback(async (page: number, pageSize: number) => {
+    const response = await PostService.getViewHistory(page, pageSize);
     return {
       data: response.data,
       currentPage: response.pageInfo.pageIndex,
@@ -106,9 +117,13 @@ function MePage() {
     );
   }
   return (
-    <main className='max-w-screen-lg m-auto flex flex-col justify-between lg:p-8 p-4'>
+    <main className='max-w-screen-xl m-auto flex flex-col justify-between lg:p-8 p-4'>
       <title>Tech Blog - Trang cá nhân</title>
-      <div className='flex gap-4 flex-wrap'>
+      <div className='flex gap-4 flex-wrap relative'>
+        <div
+          className='absolute inset-0 z-10 opacity-10'
+          style={{ backgroundImage: 'url(/img3.webp)', backgroundPosition: 'center' }}
+        ></div>
         <div>
           <Image
             className='rounded-sm'
@@ -188,17 +203,39 @@ function MePage() {
           ))}
         </div>
       </div>
-      <PostSection
-        title='Bài viết đã xuất bản'
-        fetchPosts={(pageIndex, pageSize) => fetchOwnPosts(true, pageIndex, pageSize)}
-      />
-      <PostSection
-        title='Bài viết chưa xuất bản'
-        fetchPosts={(pageIndex, pageSize) => fetchOwnPosts(false, pageIndex, pageSize)}
-      />
-      <PostSection title='Bài viết yêu thích' fetchPosts={fetchFavoritePosts} />
-      <RatingHistory />
-      <CommentHistory />
+      <div className='flex flex-wrap justify-center gap-4'>
+        <div className='flex-[0.75]'>
+          <PostSection
+            title='Bài viết đã xuất bản'
+            fetchPosts={(pageIndex, pageSize) => fetchOwnPosts(true, pageIndex, pageSize)}
+          />
+          <PostSection
+            title='Bài viết chưa xuất bản'
+            fetchPosts={(pageIndex, pageSize) => fetchOwnPosts(false, pageIndex, pageSize)}
+            className='bg-foreground/10 p-2 lg:p-4 rounded-xl'
+          />
+          <PostSection title='Bài viết yêu thích' fetchPosts={fetchFavoritePosts} />
+          <PostSection
+            title='Bài viết đã xem'
+            fetchPosts={(pageIndex, pageSize) => fetchViewHistory(pageIndex, pageSize)}
+            className='bg-foreground/10 p-2 lg:p-4 rounded-xl'
+          />
+        </div>
+        <div className='flex-[0.25]'>
+          <RatingHistory />
+          <CommentHistory />
+          <div className='py-4'></div>
+          <Recommended />
+        </div>
+      </div>
+      <div className='flex-col place-items-center bg-primary my-4 p-4 text-background relative'>
+        <div
+          className='absolute inset-0 z-10 opacity-20'
+          style={{ backgroundImage: 'url(/img3.webp)', backgroundPosition: 'center' }}
+        ></div>
+        <Logo className='text-inherit text-4xl' />
+        <h4>Nền tảng chia sẻ kiến thức công nghệ trực tuyến!</h4>
+      </div>
     </main>
   );
 }

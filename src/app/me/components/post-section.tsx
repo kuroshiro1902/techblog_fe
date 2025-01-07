@@ -5,6 +5,8 @@ import PaginationContainer from '@/components/common/pagination-container';
 import { TPost } from '@/models/post.model';
 import { PostService } from '@/services/post/post.service';
 import { useCallback } from 'react';
+import { ClassValue } from 'clsx';
+import { cn } from '@/lib/utils';
 
 interface PostSectionProps {
   title: string;
@@ -17,9 +19,10 @@ interface PostSectionProps {
     pageSize: number;
     totalPages: number;
   }>;
+  className?: ClassValue;
 }
 
-export default function PostSection({ title, fetchPosts }: PostSectionProps) {
+export default function PostSection({ title, fetchPosts, className }: PostSectionProps) {
   const renderPost = (post: TPost) => (
     <div key={post.id} className='w-full max-w-[300px]'>
       <PostCard post={post} />
@@ -33,7 +36,7 @@ export default function PostSection({ title, fetchPosts }: PostSectionProps) {
   );
 
   return (
-    <section className='mt-8'>
+    <section className={cn('mt-8', className)}>
       <h2 className='text-current text-2xl font-bold mb-2'>{title}</h2>
       <hr className='mb-2' />
       <PaginationContainer<TPost>
@@ -41,7 +44,7 @@ export default function PostSection({ title, fetchPosts }: PostSectionProps) {
         renderItem={renderPost}
         renderContainer={renderContainer}
         config={{
-          pageSize: 8,
+          pageSize: 4,
           initialPage: 1,
           scrollToTop: false,
           paramName: undefined, // Không sử dụng URL params

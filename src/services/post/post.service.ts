@@ -9,6 +9,7 @@ import { TPostRevision } from '@/models/post-revision.model';
 import { TOwnRating } from './models/own-rating.model';
 import { TOwnComment } from './models/own-comment.model';
 import { TNotification } from '@/models/notification.model';
+import { TPageInfo } from '@/models/page-info.model';
 
 const path = apiPath('/posts');
 
@@ -300,6 +301,15 @@ export const PostService = Object.freeze({
   },
   getRelativeKeywords: async (search: string) => {
     const res = await ServerSideAPI.get<string[]>(path('/relative-keywords'),{search});
+    const { isSuccess, data, message } = res.data;
+    if (isSuccess && data) {
+      return data;
+    } else {
+      throw new Error(message);
+    }
+  },
+  getViewHistory: async(pageIndex = 1, pageSize = 8) => {
+    const res = await API.get<TFilterResponse<TPost>>(path('/view-history'),{pageIndex, pageSize});
     const { isSuccess, data, message } = res.data;
     if (isSuccess && data) {
       return data;
