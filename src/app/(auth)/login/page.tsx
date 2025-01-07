@@ -78,9 +78,11 @@ function LoginPage() {
             control={form.control}
             label='Tên đăng nhập'
             name='username'
+            autoComplete='username'
             placeholder='Tên đăng nhập ít nhất 6 ký tự.'
           />
           <FormInput
+            key={'password'}
             control={form.control}
             label='Mật khẩu'
             name='password'

@@ -10,7 +10,7 @@ function Recommended() {
   const [posts, setPosts] = useState<TPost[]>([]);
   const user = useAuthStore((s) => s.user);
   useEffect(() => {
-    PostService.getRecommended()
+    PostService.getRecommended(4)
       .then((p) => setPosts(p))
       .catch((e) => {
         console.log(e.message);

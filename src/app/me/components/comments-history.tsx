@@ -58,7 +58,7 @@ export default function CommentHistory() {
   const renderContainer = (items: React.ReactNode[]) => <div className=''>{items}</div>;
 
   return (
-    <section className='mt-8'>
+    <section className='mt-6 bg-foreground/10 p-2 rounded-lg'>
       <h2 className='text-current text-2xl font-bold mb-2'>Lịch sử bình luận</h2>
       <hr className='mb-2' />
       <PaginationContainer<TOwnComment>

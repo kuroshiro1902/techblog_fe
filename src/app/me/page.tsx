@@ -121,7 +121,7 @@ function MePage() {
       <title>Tech Blog - Trang cá nhân</title>
       <div className='flex gap-4 flex-wrap relative'>
         <div
-          className='absolute inset-0 z-10 opacity-10'
+          className='absolute inset-0 z-[-1] opacity-10'
           style={{ backgroundImage: 'url(/img3.webp)', backgroundPosition: 'center' }}
         ></div>
         <div>

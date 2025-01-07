@@ -195,3 +195,7 @@ input[type='number'] {
 .ql-editor h6 {
   color: currentColor;
 }
+
+.dark .ql-editor code[data-highlighted='yes'] {
+  background-color: hsl(var(--foreground));
+}

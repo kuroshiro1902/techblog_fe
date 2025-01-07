@@ -97,7 +97,11 @@ async function UserDetailPage({ params }: { params: { id: string } }) {
     return (
       <main className='max-w-screen-lg m-auto flex flex-col justify-between lg:p-8 p-4'>
         <NavigateToMe userId={user.id} />
-        <div className='flex gap-4 flex-wrap'>
+        <div className='flex gap-4 flex-wrap relative'>
+          <div
+            className='absolute inset-0 z-[-1] opacity-10'
+            style={{ backgroundImage: 'url(/img3.webp)', backgroundPosition: 'center' }}
+          ></div>
           <div>
             <Image
               className='rounded-sm'
