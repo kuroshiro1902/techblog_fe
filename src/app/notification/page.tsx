@@ -91,22 +91,28 @@ function NotificationPage() {
 
     // Lắng nghe sự kiện thông báo từ server
     const onNewNotification = (data: TNotification) => {
-      // setNotifications((prev) => {
-      //   const p = [...prev];
-      //   p.pop();
-      //   console.log('socket nhận noti: ', socket?.id);
+      setNotifications((prev) => {
+        const notis = [data, ...prev];
+        const uniqueNotis = notis
+          .sort((a, b) => b.id - a.id)
+          .filter(
+            (n, index, self) => index === self.findIndex((t) => t.id === n.id) // Lọc trùng lặp theo `id`
+          );
 
-      //   return [data, ...p];
-      // });
-      if (user) {
-        NotificationService.getOwnNotifications({ pageIndex: 1, pageSize: 8 }).then((res) => {
-          if (res) {
-            setNotifications(res.data);
-            setHasNextPage(res?.pageInfo?.hasNextPage);
-            setPageIndex(1);
-          }
-        });
-      }
+        const limitedNotis = uniqueNotis.slice(0, 8);
+
+        console.log('Socket nhận noti: ', socket?.id);
+        return limitedNotis;
+      });
+      // if (user) {
+      //   NotificationService.getOwnNotifications({ pageIndex: 1, pageSize: 8 }).then((res) => {
+      //     if (res) {
+      //       setNotifications(res.data);
+      //       setHasNextPage(res?.pageInfo?.hasNextPage);
+      //       setPageIndex(1);
+      //     }
+      //   });
+      // }
     };
 
     if (user) {

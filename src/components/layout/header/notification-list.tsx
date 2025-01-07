@@ -81,17 +81,25 @@ const NotificationList = () => {
       };
       // Lắng nghe sự kiện thông báo từ server
       const onNewNotification = (data: TNotification) => {
-        // setNotifications((prev) => {
-        //   const notis = [...prev];
-        //   const notiIdSet = Array.from(new Set(notis.map(n=>n.id).sort((a,b)=>b-a))).slice(0, pageSize-1);
-        //   console.log('socket nhận noti: ', socket?.id);
-        //   return [data, ...notis.filter(n=>)];
-        // });
-        NotificationService.getOwnNotifications({ pageIndex: 1, pageSize }).then((res) => {
-          if (res) {
-            setNotifications(res.data);
-          }
+        setNotifications((prev) => {
+          const notis = [data, ...prev];
+          const uniqueNotis = notis
+            .sort((a, b) => b.id - a.id)
+            .filter(
+              (n, index, self) => index === self.findIndex((t) => t.id === n.id) // Lọc trùng lặp theo `id`
+            );
+
+          const limitedNotis = uniqueNotis.slice(0, pageSize);
+
+          console.log('Socket nhận noti: ', socket?.id);
+          return limitedNotis;
         });
+
+        // NotificationService.getOwnNotifications({ pageIndex: 1, pageSize }).then((res) => {
+        //   if (res) {
+        //     setNotifications(res.data);
+        //   }
+        // });
       };
 
       document.addEventListener('click', onWindowClick, { capture: true });
