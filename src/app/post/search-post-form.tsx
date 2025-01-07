@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { SearchIcon } from 'lucide-react';
-import { MultiSelect } from '../ui/multi-select';
+import { MultiSelect } from '../../components/ui/multi-select';
 import { useCategoryStore } from '@/stores/category.store';
 import {
   Select,
@@ -15,8 +15,9 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '../ui/select';
+} from '../../components/ui/select';
 import { useForm } from 'react-hook-form';
+import RelativeKeywords from './relative-keywords';
 
 export interface ISearchPostParams {
   categoryId?: number[] | number;
@@ -101,7 +102,7 @@ function SearchPostForm({
   return (
     <form onSubmit={onSubmit} className='flex flex-col gap-2 w-full max-w-screen-md m-auto'>
       {/* Search Input */}
-      <div className='flex w-full items-center gap-2'>
+      <div className='flex flex-col w-full items-center gap-2'>
         <Input
           ref={inputRef}
           placeholder='Tìm kiếm theo tiêu đề'
@@ -113,6 +114,7 @@ function SearchPostForm({
             form.setValue('search', e.target.value.trim());
           }}
         />
+        <RelativeKeywords search={form.getValues('search')?.trim()} />
       </div>
 
       {/* Filters */}

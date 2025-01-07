@@ -1,5 +1,5 @@
 import Pagination from '@/components/common/pagination';
-import SearchPostForm, { ISearchPostParams } from '@/components/form/search-post-form';
+import SearchPostForm, { ISearchPostParams } from '@/app/post/search-post-form';
 import PostCard from '@/components/post/post-card';
 import { TFilterResponse } from '@/models/filter-response.model';
 import { postFilterSchema, TPost } from '@/models/post.model';
@@ -9,6 +9,8 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import Recommended from './recommended';
 import { Logo } from '@/components/layout/logo';
+import RelativeKeywords from './relative-keywords';
+import { Input } from '@/components/ui/input';
 
 export async function generateMetadata({
   searchParams,
@@ -59,7 +61,7 @@ export default async function PostPage({ searchParams }: { searchParams?: ISearc
   }
 
   // Fetch posts from the service
-  console.log({ filter });
+  // console.log({ filter });
 
   try {
     const { data, pageInfo } = await PostService.filterPosts(filter);
@@ -96,6 +98,12 @@ export default async function PostPage({ searchParams }: { searchParams?: ISearc
             <h3 className='text-primary'>Khám phá những bài viết hay.</h3>
             <p className='mb-4'>Bạn có thể tìm kiếm bài viết theo tên bài viết, chủ đề, ...</p>
             <SearchPostForm defaultValue={searchParams ?? {}} />
+            {/* <div className='flex'>
+              <label className='flex items-center gap-2 w-full max-w-screen-md m-auto pt-4 cursor-pointer'>
+                <Input type='checkbox' className='w-4 h-4' />{' '}
+                <span className='text-foreground'>Tìm kiếm nâng cao với prompt</span>
+              </label>
+            </div> */}
             <div className='py-4'></div>
             <ul className='grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-4 justify-items-center items-center'>
               {postData?.data.map((post, i) => (

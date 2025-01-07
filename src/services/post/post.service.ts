@@ -297,5 +297,14 @@ export const PostService = Object.freeze({
     } else {
       throw new Error(message);
     }
+  },
+  getRelativeKeywords: async (search: string) => {
+    const res = await ServerSideAPI.get<string[]>(path('/relative-keywords'),{search});
+    const { isSuccess, data, message } = res.data;
+    if (isSuccess && data) {
+      return data;
+    } else {
+      throw new Error(message);
+    }
   }
 });

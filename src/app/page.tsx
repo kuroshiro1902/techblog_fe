@@ -9,7 +9,7 @@ import CategorySection from './components/category-section';
 import Link from 'next/link';
 
 import { Metadata } from 'next';
-import { ISearchPostParams } from '@/components/form/search-post-form';
+import { ISearchPostParams } from '@/app/post/search-post-form';
 import PostSection from './components/post-section';
 import CommentBlock from './components/commect-block';
 
